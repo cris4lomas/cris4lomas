@@ -1,4 +1,4 @@
-#ifndef ESTRUCTURAS_H
+#ifndef ESTRUCTURAS_Haaaaaaaaaaaaaaaaaaaa
 #define ESTRUCTURAS_H
 
 /*Este archivo de cabecera fue creado para aportarle a todos los archivos necesarios la estructura que se utiliza en los archivos de competidores.
