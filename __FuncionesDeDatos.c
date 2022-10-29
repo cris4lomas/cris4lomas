@@ -371,12 +371,133 @@ void ListarDat(FILE * Arch, int Metodo){
 void AltaCompetidor(FILE * Arch){
 	/*La siguiente función registra un nuevo competidor en el archivo de extensión .DAT.
 	Dicho archivo debe tener habilitada la opción de "ESCRITURA BINARIA"
+	Todos los registros vacíos que estén entre el primer competidor y el número de orden ingresado tendrán todos sus campos convertidos en cero.
 	CAL 29/10/2022
 	*/
 	
 	//Verifico que el archivo no sea nulo.
 	if(Arch != NULL){
-		printf("\nSe ha dado de alta un nuevo competidor en el archivo .dat\n");
+		
+		//*********************************
+		//INICIO DE CICLOS EN SECUENCIA
+		//*********************************
+		
+		//Cada uno de los ciclos tendrá como finalidad asegurarse de que los datos solicitados sean válidos.
+		//Para validarlos se hará uso de la siguiente bandera:
+		int Flag; //0 indica FALSO y 1 VERDADERO - CAL 29/10/2022
+		
+		//Creamos el competidor que almacenará los datos a ingresar.
+		Competidor Comp;
+		
+		//Nos posicionamos al inicio del archivo y obtenemos cuántos registros existen
+		//(será de utilidad para verificar que el orden no supere la cantidad de registros) - CAL 29/10/2022
+		
+		rewind(Arch);
+		fseek(Arch,0,SEEK_END);
+		int CantDeRegistros = ftell(Arch) / sizeof(Competidor);
+		
+		//Volvemos a posicionarnos la inicio
+		rewind(Arch);
+		
+		
+		//CICLO DE ORDEN:
+		//Verifica que el orden no esté ocupado y, además, que sea un número entero válido.
+		
+		printf("\nIngrese un n%cmero de orden para dar de alta. Debe ser un entero positivo y no puede contener m%cs de 7 caracteres:\n",163,160);
+		
+		//Almacenamos el orden ingresado en un char para comprobar su validez. CAL 29/10/2022
+		char ChOrden[9] ={""};
+		
+		do{
+			Flag = 0; //Seteamos la bandera en FALSO en cada vuelta.
+			gets(ChOrden);
+			ChOrden[7] = '\0'; //Seteamos en NULL los últimos dígitos del char en caso de que ingresen más caracteres que los permitidos con el 'gets'. CAL 29/10/2022
+			
+			if(ValidaNumSinDec(ChOrden) == 1){
+				//En caso de que el número de orden ingresado sea válido, se procederá a verificar que no esté ocupado por otro competidor. CAL 29/10/2022
+				if(atoi(ChOrden) > CantDeRegistros){ //Si el número de orden supera la cantidad de registros existentes, solo puede ser válido.
+					Flag = 1;
+				} else{ //En caso de que no supere la cantidad de registros, se verifica que el número sea mayor a cero y que no esté ocupado por otro competidor. CAL 29/10/2022
+					if(atoi(ChOrden) < 1){
+						printf("\n\nError. El n%cmero ingresado debe ser mayor a cero. Ingrese un n%cmero de orden v%clido:\n",163,163,160);
+						Flag = 0;
+					} else{ //En caso de que el orden sea válido pero sea menor o igual a la cantidad de registros, se verifica que no esté ocupado. CAL 29/10/2022
+						
+						//Los rewind son por seguridad, descartan que el archivo pueda haber quedado apuntado en otro lugar
+						rewind(Arch);
+						fseek(Arch, sizeof(Competidor) * (atoi(ChOrden) - 1),SEEK_CUR);
+						fread(&Comp,sizeof(Competidor),1,Arch);
+						rewind(Arch);
+						
+						if(Comp.NrOrd != 0){
+							printf("\n\nEl n%cmero de orden ingresado ya est%c ocupado. Ingrese un nuevo n%cmero de orden:\n",163,160,163);
+							Flag = 0;
+						} else{ //En caso de que el lugar no esté ocupado, se habilita la bandera.
+							Flag = 1;
+						}
+						
+					}
+					
+					
+				}
+			} else{ //En caso de que no supere la validación de la función 'ValidaNumSinDec':
+				printf("\n\nHa ingresado un n%cmero de orden no v%clido. Ingrese un n%mero entero mayor a cero:\n",163,160,163);
+				Flag = 0;
+			}
+			
+		} while (Flag == 0);
+		
+		
+		//CICLO DE NÚMERO DE CORREDOR:
+		//Simplemente verifica sea un número entero válido y positivo, y que el número de corredor no se repita con otro.
+		
+		printf("\nIngrese un n%cmero de corredor. Debe ser un entero positivo y no puede contener m%cs de 8 caracteres. Tampoco puede estar repetido:\n",163,160);
+		
+		//Almacenamos el nro de corredor ingresado en un char para comprobar su validez. CAL 29/10/2022
+		char ChCorredor[10] ={""};
+		
+		do{
+			Flag = 0; //Seteamos la bandera en FALSO en cada vuelta.
+			gets(ChCorredor);
+			ChCorredor[8] = '\0'; //Seteamos en NULL los últimos dígitos del char en caso de que ingresen más caracteres que los permitidos con el 'gets'. CAL 29/10/2022
+			
+			if(ValidaNumSinDec(ChCorredor) == 1){
+				//Si supera la validación de número entero:
+				
+				//Debe ser un número mayor a cero.
+				if(atoi(ChCorredor) < 1) {
+					printf("\n\nEl n%cmero de corredor debe ser mayor a cero.\n",163);
+					Flag = 0;
+				} else {
+					//Si el número de corredor es válido, se verifica que no esté repetido.
+					
+					//Se establece la bandera en "Verdadero" y se desactiva si el número de corredor se encuentra en otro competidor.
+					Flag = 1;
+					
+					rewind(Arch);
+					
+					for(int i = 0; i < CantDeRegistros; i++){
+						fread(&Comp,sizeof(Competidor),1,Arch);
+						if(Comp.NrCorr == atoi(ChCorredor)) Flag = 0;
+					}
+					
+					rewind(Arch);
+					//Si el número de corredor se encontró repetido, emite un mensaje de error:
+					if (Flag == 0) printf("\n\nEl n%cmero de corredor ingresado ya existe con el n%cmero de orden: %d. Ingrese otro n%cmero de corredor.\n",163,163,Comp.NrOrd,163);
+				} 
+				
+			} else { //Si no supera la validación de número entero:
+				printf("\n\nHa ingresado un n%cmero incorrecto. Ingrese un n%cmero entero sin signos ni caracteres especiales:\n",163,163);
+				Flag = 0;
+			}
+		} while (Flag == 0);
+		
+		
+		//CICLO DE FECHA:
+		//Valida que la fecha sea válida:
+		
+		
+		
 	//Si el archivo es nulo:
 	} else printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
 
