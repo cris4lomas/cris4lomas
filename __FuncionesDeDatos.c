@@ -383,6 +383,9 @@ void AltaCompetidor(FILE * Arch){
 		//*********************************
 		
 		//Cada uno de los ciclos tendrá como finalidad asegurarse de que los datos solicitados sean válidos.
+		//El método de validación consiste en hacer uso de las funciones diseñadas especialmente para validar datos en '__FuncionesValidantes.c'
+		//Hasta que la función validante no devuelva VERDADERO, no se sale del ciclo.
+		
 		//Para validarlos se hará uso de la siguiente bandera:
 		int Flag; //0 indica FALSO y 1 VERDADERO - CAL 29/10/2022
 		
@@ -399,8 +402,9 @@ void AltaCompetidor(FILE * Arch){
 		//Volvemos a posicionarnos la inicio
 		rewind(Arch);
 		
-		
+		//*****************
 		//CICLO DE ORDEN:
+		//*****************
 		//Verifica que el orden no esté ocupado y, además, que sea un número entero válido.
 		
 		printf("\nIngrese un n%cmero de orden para dar de alta. Debe ser un entero positivo y no puede contener m%cs de 7 caracteres:\n",163,160);
@@ -448,7 +452,9 @@ void AltaCompetidor(FILE * Arch){
 		} while (Flag == 0);
 		
 		
+		//******************************
 		//CICLO DE NÚMERO DE CORREDOR:
+		//******************************
 		//Simplemente verifica sea un número entero válido y positivo, y que el número de corredor no se repita con otro.
 		
 		printf("\nIngrese un n%cmero de corredor. Debe ser un entero positivo y no puede contener m%cs de 8 caracteres. Tampoco puede estar repetido:\n",163,160);
@@ -493,10 +499,183 @@ void AltaCompetidor(FILE * Arch){
 		} while (Flag == 0);
 		
 		
+		//****************
 		//CICLO DE FECHA:
-		//Valida que la fecha sea válida:
+		//****************
+		//Valida que la fecha sea válida.
+		
+		printf("\n\nIngrese la fecha del corredor con formato 'dd-mm-yyyy' (en vez de guiones puede separar los valores con barras '/' o espacios, pero lo importante es que todos los d%cgitos sean num%cricos:\n",161,163);
+		
+		//Almacenamos la fecha en un char para comprobar su validez. CAL 29/10/2022
+		char ChFecha[13] ={""};
+		
+		do{
+			Flag = 0; //Seteamos la bandera en FALSO en cada vuelta.
+			gets(ChFecha);
+			ChFecha[11] = '\0'; //Seteamos en NULL los últimos dígitos del char en caso de que ingresen más caracteres que los permitidos con el 'gets'. CAL 29/10/2022
+			
+			if(ValidaFecha(ChFecha) == 1){
+				Flag = 1;
+			} else{
+				Flag = 0;
+				printf("\n\nHa ingresado una fecha err%cnea. Verifique que el formato sea correcto y que la fecha sea una fecha v%clida e ingr%csela nuevamente:\n",162,160,130);
+			}
+		} while(Flag == 0);
+		
+		//****************
+		//CICLO DE EDAD:
+		//****************
+		//Valida que la edad sea válida.
+		
+		printf("\n\nIngrese la edad del corredor:\n");
+		char ChEdad[5] = {""};
+		
+		do{
+			Flag = 0;
+			gets(ChEdad);
+			ChEdad[3] = '\0'; //Seteamos en NULL los últimos dígitos del char en caso de que ingresen más caracteres que los permitidos con el 'gets'. CAL 29/10/2022
+			
+			//Si el número leído no supera la validación:
+			if(ValidaNumSinDec(ChEdad) == 0){
+				printf("\n\nHa ingresado un n%cmero err%cneo. Ingrese una edad v%clida:\n",163,162,160);
+				Flag = 0;
+			} else {
+				//Si supera la validación de fórmula, se procede a verificar que la edad sea real:
+				if(atoi(ChEdad) > 0 && atoi(ChEdad) < 161) {
+					Flag = 1;
+				} else {
+					printf("\n\nNo es posible que un competidor tenga la edad indicada. Ingrese una edad verdadera:\n");
+					Flag = 0;
+				}
+			}
+		} while (Flag == 0);
 		
 		
+		//********************
+		//CICLO DE PAÍS
+		//********************
+		//Se procede a verificar que el país esté bien escrito. CAL 29/10/2022
+		
+		printf("\n\nIngrese el pa%cs del corredor:\n",161);
+		char ChPais[25] = {""};
+		
+		do{
+			Flag = 0;
+			gets(ChPais);
+			ChEdad[23] = '\0'; //Seteamos en NULL los últimos dígitos del char en caso de que ingresen más caracteres que los permitidos con el 'gets'. CAL 29/10/2022
+			
+			//Si el pais leído no supera la validación:
+			if(ValidaAbc(ChPais) == 0){
+				printf("\n\nHa ingresado un pa%cs err%cneo. Ingrese un pa%cs v%clido usando solamente caracteres alfab%cticos:\n",161,162,161,160,130);
+				Flag = 0;
+			} else {
+				//Se convierten los caracteres del país en mayúsculas
+				for(int i = 0; i < strlen(ChPais); i++) ChPais[i] = toupper(ChPais[i]);
+				Flag = 1;
+			}
+		} while (Flag == 0);
+		
+		
+		//********************
+		//CICLO DE TIEMPO
+		//********************
+		//Se procede a verificar que el tiempo tenga el formato correcto. CAL 29/10/2022
+		
+		printf("\n\nIngrese el tiempo del corredor (no puede ser mayor a 999):\n");
+		char ChTiempo[25] = {""};
+		
+		do{
+			Flag = 0;
+			gets(ChTiempo);
+			ChTiempo[23] = '\0'; //Seteamos en NULL los últimos dígitos del char en caso de que ingresen más caracteres que los permitidos con el 'gets'. CAL 29/10/2022
+			
+			//Si el pais leído no supera la validación:
+			if(ValidaNumConDec(ChTiempo) == 0){
+				printf("\n\nHa ingresado un tiempo err%cneo. Ingrese un tiempo v%clido usando solamente separador de decimales en caso de que lo necesite (no use separadores de mil%csimos):\n",162,160,130);
+				Flag = 0;
+			} else {
+				//Se convierten los caracteres del país en mayúsculas
+				if(atof(ChTiempo) > 999 || atof(ChTiempo) < 1){
+					printf("\n\nEl tiempo debe ser mayor o igual a '1' y no puede superar '999' porque todos esos competidores quedan descalificados y no es posible insertarlos en la base. Ingrese un tiempo v%clido para continuar:\n",160);
+					Flag = 0;
+				} else{
+					Flag = 1;
+				}
+			}
+		} while (Flag == 0);
+		
+		
+		//**********************************
+		//FIN DE LOS CICLOS EN SERIE
+		//**********************************
+		
+		//Si el número de orden ingresado es mayor a la cantidad de registros existentes, me posiciono al final del archivo y voy cargando en cero todos los datos intermedios. CAL 29/10/2022
+		
+		if(atoi(ChOrden) > CantDeRegistros){
+			//Si me excedo de la cantidad de registros existentes, posiblemente deba almacenar espacios en blanco
+			Comp.NrOrd = 0;
+			Comp.NrCorr = 0;
+			Comp.Dia = 0;
+			strcpy(Comp.Mes,"0  ");
+			Comp.Anio = 0;
+			Comp.Edad = 0;
+			strcpy(Comp.Pais,"0  ");
+			Comp.Activo = 0;
+			Comp.Tiempo = 0;
+			
+			/***************
+			Inicio ciclo
+			****************
+			El ciclo recorre todo el archivo binario a partir de la última posición e irá rellenando con ceros todas aquellas posiciones intermedias
+			Entre la última fila preexistente y el nuevo número de orden.
+			*/
+			
+			//Declaro una variable que será la que almacene el tope del bucle:
+			int Tope = atoi(ChOrden) - CantDeRegistros;
+			
+			//Me posiciono al final del archivo. CAL 29/10/2022
+			rewind(Arch);
+			fseek(Arch,0,SEEK_END);
+			
+			for (int i = 0; i < Tope; i++){
+				if( i == Tope - 1) break; //Si se llega a la
+				fwrite(&Comp,sizeof(Competidor),1,Arch);
+			}
+			
+		}
+		
+		//Una vez finalizada la etapa de validación y una vez llegado a la posición del número de orden, se procede a almacenar el competidor. CAL 29/10/2022
+		Comp.NrOrd = atoi(ChOrden);
+		Comp.NrCorr = atoi(ChCorredor);
+		Comp.Dia = ExtraerDeFecha(ChFecha,'d','/');
+		
+		//Comp.Mes: Para el mes, se crea una variable que servirá para almacenar el valor entero del mes y luego se usará una función predefinida para almacenar sus tres primeros caracteres. CAL 29/10/2022
+		int Mes = ExtraerDeFecha(ChFecha,'m','/');
+		ConvertirMesAString(Mes,Comp.Mes);
+		
+		Comp.Anio = ExtraerDeFecha(ChFecha,'a','/');
+		Comp.Edad = atoi(ChEdad);
+		
+		//Comp.Pais
+		strncpy(Comp.Pais,ChPais,3);
+		
+		Comp.Activo = 1;
+		Comp.Tiempo = (float) atof(ChTiempo);
+		
+		fwrite(&Comp,sizeof(Competidor),1,Arch);
+		
+		printf("\n\n*******************************\n");
+		printf("Datos cargados exitosamente.");
+		printf("\n*******************************\n\n");
+		printf("Nr. Orden: %d\n", Comp.NrOrd);
+		printf("Nr. Corredor: %d\n", Comp.NrCorr);
+		printf("Fecha: %s\n", ChFecha);
+		printf("Edad: %d\n", Comp.Edad);
+		printf("Pa%cs: %s\n",161, ChPais);
+		printf("Activo: %d\n", Comp.Activo);
+		printf("Tiempo: %.6f\n", Comp.Tiempo);
+		
+			
 		
 	//Si el archivo es nulo:
 	} else printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
@@ -507,8 +686,8 @@ void AltaCompetidor(FILE * Arch){
 void BuscarCompetidor(FILE * Arch, int Metodo){
 	/*La presente función busca y muestra los datos de un competidor dado mediante dos métodos distintos, el cual se elige en el segundo parámetro.
 	Para una ayuda más visual, se puede ver 'MenuBuscarComp'
-	* Si método es 2: Busca un competidor por número de orden.
-	* Si método es 3: Busca un competidor por número de corredor.
+	* Si método es 2: Busca un competidor por número de orden. (acceso directo)
+	* Si método es 3: Busca un competidor por número de corredor. (acceso secuencial)
 	*/
 	
 	//Verifico que el archivo existe y el método sea válido. CAL 29/10/2022
