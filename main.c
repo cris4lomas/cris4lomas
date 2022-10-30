@@ -31,7 +31,8 @@ int main(){
 	//El archivo 'corredores.dat', será un archivo binario que se puede crear desde el programa y en el cual se van a volcar todos los datos que operemos.
 	const char * NombreDat = {"corredores.dat"};
 	//El archivo 'bajas_fisicas.dat', será un archivo binario que se crea automáticamente al dar de 'BAJA FÍSICA' a un competidor. Registra todas las bajas físicas que se hayan realizado.
-	const char * NombreBajasFis = {"bajas_fis.dat"};
+	const char * NombreBajasFis = {"competidores_bajas_"};
+	
 	
 	//La variable 'OpcionSel' se irá modificando a lo largo de todo el programa a medida que el usuario vaya seleccionando opciones entre los distintos menúes.
 	int OpcionSel = -1;

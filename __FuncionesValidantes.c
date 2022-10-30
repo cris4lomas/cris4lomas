@@ -76,7 +76,7 @@ int ValidaAbc(char Texto[]){
 		
 		//Valido que, al menos, las primeras tres letras de la palabra no estén en blanco. CAL 30/10/2022
 		if(i == 0 || i == 1 || i == 2){
-			if(!isalpha(Texto[i]) Flag = 0;
+			if(!isalpha(Texto[i])) Flag = 0;
 		}
 	}
 	return Flag;

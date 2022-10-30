@@ -819,8 +819,9 @@ void BuscarModifComp(FILE * Arch, int Metodo, char Opcion){
 				printf("\tCompetidor n%cmero: %d",163, Comp.NrOrd);
 				printf("\n\t**********************************\n\n");
 				printf("\tN%cmero de corredor: %d\n",163, Comp.NrCorr);
-				printf("\tPa%cs: %s\n",161, Comp.Pais);
 				printf("\tEdad: %d\n", Comp.Edad);
+				printf("\tFecha: %d-%3s-%d\n", Comp.Dia,Comp.Mes,Comp.Anio);
+				printf("\tPa%cs: %s\n",161, Comp.Pais);
 				printf("\tTiempo: %.6f\n\n", Comp.Tiempo);
 				
 				do{
@@ -1003,36 +1004,202 @@ void BajaLogica(FILE * Arch){
 	/*La siguiente modifica el campo "Activo" de un competidor en el archivo de extensión .DAT y lo deja en cero (0).
 	Dicho archivo debe tener habilitada la opción de "ESCRITURA BINARIA"
 	Si el competidor no existe o ya está inactivo, se dará mensaje de aviso.
+	Si se completa la baja lógica, se muestran todos los usuarios activos en el momento, para lo cual la presente función
+	hace uso de la llamada 'ListarDat(Arch,3)' (función definida en el presente archivo y la cual muestra todos los usuarios activos cuando se le pasa '3' como segundo parámetro)
 	CAL 29/10/2022
 	*/
+	
+	/*Las siguientes variables son todas las que se usarán en la función:
+	*) NumOrden será el número de orden que el usuario ingrese para dar la baja
+	*) Flag indicará si el número ingresado es un número válido
+	*) CantDeRegistros indica la cantidad total de registros que hay en el archivo binario
+		Esta última variable nos sirve para descartar que el número de orden existe si el mismo supera la cantidad de registros.
+	*) Comp nos servirá para almacenar los datos del competidor que será inactivado.
+	
+	-CAL 30/10/2022 -
+	*/
+	
+	
+	char ChNumOrden[13], Opcion;
+	int NumOrden;
+	int Flag = 1; //Asigno la bandera en verdadero por defecto.
+	int CantDeRegistros;
+	Competidor Comp;
+	
 	//Verifico que el archivo exista. CAL 29/10/2022
 	if(Arch != NULL){
+		//Si el archivo existe, asigno la cantidad de registros existentes.
+		rewind(Arch);
+		fseek(Arch,0,SEEK_END);
+		CantDeRegistros = ftell(Arch) / sizeof(Competidor);
+		rewind(Arch);
 		
-		printf("\nSe ha dado la baja logica de un competidor.\n");
+		//Si el archivo está vacío, se pone la bandera en FALSO
+		if (CantDeRegistros == 0){
+			Flag = 0;
+			printf("\n\nEl archivo que intenta utilizar est%c vac%co. Intente la opci%cn de 'Migrar datos entre archivos' o pruebe creando alg%cn registro en 'Dar ALTA a competidor'.\n",160,161,162,163);
+		}
 		
-	} else printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
+		
+	//Si el archivo no existe, pongo en FALSO la bandera y doy mensaje de aviso.
+	} else{
+		Flag = 0;
+		printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
+	}
+		
+	//Si el archivo no es nulo y no está vacío, se ejecuta la función.
+	if(Flag == 1){
+		printf("\n\n******************************\n");
+		printf("BAJA L%cGICA",224);
+		printf("\n******************************\n\n");
+		printf("Ingrese el n%cmero de orden que desea dar de baja o cero (0) para cancelar:\n",163);
+		
+		do{
+			gets(ChNumOrden);
+			ChNumOrden[10] = '\0';
+			Flag = ValidaNumSinDec(ChNumOrden);
+			
+			//Valido que el número sea un entero positivo o cero.
+			if(Flag == 1){
+				
+				//Guardo el entero en la variable correspondiente. CAL 30/10/2022
+				NumOrden = atoi(ChNumOrden);
+				if(NumOrden < 0){
+					Flag = 0;
+					printf("\n\nEl n%cmero ingresado no es v%clido. Ingrese un n%cmero de orden (mayor a cero) o cero para cancelar:\n",163,160,163);
+				}
+				
+			//En caso de que no supere la validación de número:
+			} else printf("\n\nEl valor ingresado no es v%clido. Ingrese un n%cmero de orden (mayor a cero) o cero para cancelar:\n",160,163);
+			
+		} while(Flag == 0);
+		
+		//Una vez que se comprueba que el número es válido. Verifico que exista. CAL 30/10/2022
+		if(NumOrden > 0){
+			if(NumOrden <= CantDeRegistros){
+			//Si el número de orden se encuentra dentro de la cantidad de registros existentes. - CAL 30/10/2022 -
+				
+				rewind(Arch);
+				fseek(Arch, (NumOrden - 1) * sizeof(Competidor),SEEK_CUR);
+				fread(&Comp,sizeof(Competidor),1,Arch);
+				
+				//Si el número de orden ingresado corresponde a un competidor activo, entonces se procede a mostrar los datos y a preguntar para confirmar. CAL 30/10/2022
+				if(Comp.Activo == 1){
+					
+					printf("\n\n\t**********************************\n");
+					printf("\tCompetidor n%cmero: %d",163, Comp.NrOrd);
+					printf("\n\t**********************************\n\n");
+					printf("\tN%cmero de corredor: %d\n",163, Comp.NrCorr);
+					printf("\tEdad: %d\n", Comp.Edad);
+					printf("\tFecha: %d-%3s-%d\n", Comp.Dia,Comp.Mes,Comp.Anio);
+					printf("\tPa%cs: %s\n",161, Comp.Pais);
+					printf("\tTiempo: %.6f\n\n", Comp.Tiempo);
+					
+					printf("%cConfirma que desea dar la baja l%cgica al competidor mostrado en pantalla%c (s/n)\n",168,162,63);
+					
+					//Solicito la opción al usuario hasta que ingrese una S o una N
+					do{
+						scanf("%c",&Opcion);
+						fflush(stdin);
+						Opcion = toupper(Opcion);
+						if(Opcion != 'S' && Opcion != 'N') printf("\nOpci%cn incorrecta. Seleccione si desea confirmar la baja l%cgica (s) o no (n):\n",162,162);
+					} while(Opcion != 'S' && Opcion != 'N');
+					
+					if(Opcion == 'S'){ //Si se confirma la baja lógica
+						
+						Comp.Activo = 0;
+						fseek(Arch, (-1) * sizeof(Competidor),SEEK_CUR);
+						fwrite(&Comp,sizeof(Competidor),1,Arch);
+						//Luego de finalizar el uso del archivo. Coloco el puntero a su inicio. CAL 30/10/2022
+						rewind(Arch);
+						
+						//Por último llamo a la función que muestra los usuarios activos y emito un mensaje de éxito. CAL 30/10/2022
+						
+						ListarDat(Arch, 3);
+						printf("\n\n*********************************************************************\n");
+						printf("OPERACI%cN EXITOSA. ARRIBA SE MUESTRAN LOS USUARIOS ACTIVOS ACTUALMENTE.",224);
+						printf("\n*********************************************************************\n\n");
+						system("pause");
+						
+					} else{ //Si se cancela la baja lógica. - CAL 30/10/2022 - 
+						printf("\n\n*****************************\n");
+						printf("OPERACI%cN CANCELADA.",224);
+						printf("\n*****************************\n\n");
+						system("pause");
+					}
+					
+				//Si el número de orden ingresado pertenece a un competidor que ya estaba inactivo, se informa. CAL 30/10/2022
+				} else{
+				   printf("\n\nEl n%cmero de orden ingresado corresponde a un competidor que ya estaba inactivo previamente.\n",163);
+					system("pause");
+				}
+				//Luego de finalizar el uso del archivo. Coloco el puntero a su inicio. CAL 30/10/2022
+				rewind(Arch);
+				
+			//Si el número de orden supera la cantidad de registros existentes:
+			} else printf("\n\nEl n%cmero de orden ingresado no se encontr%c en la base de datos.\n",163,162);
+		
+		} //Fin de validación del número de orden.
+		
+	} //Fin de validación de archivo no nulo y no vacío.
 	
 }
 	
-void BajaFisica(FILE * ArchDat, FILE * ArchBajasFis, const char * NombreArchBajasFis){
+void BajaFisica(FILE * ArchDat, FILE * ArchBajas, const char * NombreArchBajasFis){
 	/*La siguiente función modifica los datos de un competidor en el archivo de extensión .DAT y deja todos sus campos en cero (0).
 	Dicho archivo debe tener habilitada la opción de "ESCRITURA BINARIA"
 	Además, esta función registra las bajas físicas en otro archivo .DAT que crea en caso de que no exista (si no, los agrega al inicio del documento).
 	CAL 29/10/2022
 	*/
-	//Verifico que ambos archivos existan. CAL 29/10/2022
 	
-	if(ArchBajasFis == NULL) {
+	int Flag = 1; //Asigno la bandera en verdadero por defecto.
+	int CantDeRegistDat;
+	int CantDeRegistXyz;
+	
+	//*******************************
+	//ZONA DE VERIFICACIÓN PREVIA
+	//*******************************
+	
+	if(ArchBajas == NULL) {
 		//Si no existe el archivo, lo creo. CAL 29/10/2022
-		ArchBajasFis = fopen(NombreArchBajasFis,"wb+");
+		ArchBajas = fopen(NombreArchBajasFis,"wb+");
 	}
 	
-	//Si el archivo DAT que contiene la información de los competidores activos no existe, entonces la función no puede ejecutar nada. CAL 29/10/2022
-	if(ArchDat != NULL){
-	
-		printf("\nSe ha dado la baja fisica de un competidor.\n");
+	//Verifico que ambos archivos existan. CAL 29/10/2022
+	if(ArchDat != NULL && ArchBajas != NULL){
 		
-	} else printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
+		//Si el archivo DAT existe, asigno la cantidad de registros existentes.
+		rewind(ArchDat);
+		fseek(ArchDat,0,SEEK_END);
+		CantDeRegistDat = ftell(ArchDat) / sizeof(Competidor);
+		rewind(ArchDat);
+		
+		//Replico el recuento de datos para el archivo de bajas físicas
+		rewind(ArchBajas);
+		fseek(ArchBajas,0,SEEK_END);
+		CantDeRegistXyz = ftell(ArchBajas) / sizeof(Competidor);
+		rewind(ArchBajas);
+		
+		//Si el archivo .DAT está vacío, se pone la bandera en FALSO
+		if (CantDeRegistDat == 0){
+			Flag = 0;
+			printf("\n\nEl archivo .DAT que intenta utilizar est%c vac%co. Intente la opci%cn de 'Migrar datos entre archivos' o pruebe creando alg%cn registro en 'Dar ALTA a competidor'.\n",160,161,162,163);
+		}
+		
+		
+		//Si el archivo no existe, pongo en FALSO la bandera y doy mensaje de aviso.
+	} else{
+		Flag = 0;
+		if (ArchDat == NULL) printf("\n\nHubo un error con el archivo DAT. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
+		if (ArchBajas == NULL) printf("\n\nHubo un error con el archivo XYZ. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
+	}
+	
+	//Si los archivo no son nulos y el archivo .DAT no está vacío, se ejecuta la función. CAL 30/10/2022
+	
+	//**********************
+	//EJECUCIÓN DE FUNCIÓN
+	//**********************
+	if(Flag == 1){}
 	
 }
 	

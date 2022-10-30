@@ -19,7 +19,7 @@ void ModificarCompetidor(FILE * Arch);
 
 void BajaLogica(FILE * Arch);
 
-void BajaFisica(FILE * ArchDat, FILE * ArchBajasFis, const char * NombreArchBajasFis);
+void BajaFisica(FILE * ArchDat, FILE * ArchBajas, const char * NombreArchBajasFis);
 
 void VerBajasFisicas(FILE * Arch);
 
