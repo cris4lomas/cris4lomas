@@ -696,8 +696,10 @@ void AltaCompetidor(FILE * Arch){
 }
 
 
-void BuscarCompetidor(FILE * Arch, int Metodo){
-	/*La presente función busca y muestra los datos de un competidor dado mediante dos métodos distintos, el cual se elige en el segundo parámetro.
+void BuscarCompetidor(FILE * Arch, int Metodo, char Opcion){
+	/*La presente función busca, muestra o modifica los datos de un competidor dado (depende si el parámetro 3 es 'b' de BUSCAR o 'm' de MODIFICAR)
+	El dato a buscar o reemplazar se encuentra mediante dos métodos distintos, el cual se elige en el segundo parámetro.
+	
 	Para una ayuda más visual, se puede ver 'MenuBuscarComp' en el archivo '__Menus.c'
 	* Si método es 2: Busca un competidor por número de orden. (acceso directo)
 	* Si método es 3: Busca un competidor por número de corredor. (acceso secuencial)
@@ -783,10 +785,69 @@ void BuscarCompetidor(FILE * Arch, int Metodo){
 		//Si la bandera se activó, se imprimen los datos, si no se emite un mensaje de aviso. CAL 30/10/2022
 		if(Flag == 1){
 			
-			printf("\t| %-5s | %-10s | %-5s | %-5s | A%co%-2s | %-5s | %-5s | %-6s | %-12s |\n", "Orden", "Corredor", "Dia", "Mes", 164,"", "Edad", "Pais","Activo", "Tiempo");
-			printf("\t|------------------------------------------------------------------------------------|");
-			printf("\n\t| %-5d | %-10d | %-5d | %-5s | %-5d | %-5d | %-5s | %-6d | %-12.6f |", Comp.NrOrd, Comp.NrCorr, Comp.Dia, Comp.Mes, Comp.Anio, Comp.Edad, Comp.Pais, Comp.Activo, Comp.Tiempo);
-			printf("\n\t|------------------------------------------------------------------------------------|\n\n");
+			//*********************************************************************
+			//BIFURCACIÓN: ACÁ SE DIFERENCIAN LAS OPCIONES PARA BUSCAR O MODIFICAR
+			//*********************************************************************
+			
+			//Si el competidor se enuentra, se procede a mostrar los datos en caso de que se haya elegido la opción "BUSCAR"
+			//O se procede a pedir los datos a reemplazar, en caso de que haya elegido la opción "MODIFICAR"
+			if(toupper(Opcion) == 'B'){
+				//*****************************
+				//SECCIÓN DE BÚSQUEDAA
+				//*****************************
+				printf("\t| %-5s | %-10s | %-5s | %-5s | A%co%-2s | %-5s | %-5s | %-6s | %-12s |\n", "Orden", "Corredor", "Dia", "Mes", 164,"", "Edad", "Pais","Activo", "Tiempo");
+				printf("\t|------------------------------------------------------------------------------------|");
+				printf("\n\t| %-5d | %-10d | %-5d | %-5s | %-5d | %-5d | %-5s | %-6d | %-12.6f |", Comp.NrOrd, Comp.NrCorr, Comp.Dia, Comp.Mes, Comp.Anio, Comp.Edad, Comp.Pais, Comp.Activo, Comp.Tiempo);
+				printf("\n\t|------------------------------------------------------------------------------------|\n\n");
+			
+			} else if(toupper(Opcion) == 'M') {
+				//*****************************
+				//SECCIÓN DE MODIFICACIÓN
+				//*****************************
+				
+				//En este sección reutilizo las variables 'NumBuscado' (char) y 'NumValidado' (int) para comprobar la opción buscada por el usuario. CAL 30/10/2022
+				
+				printf("\n\n\t**********************************\n
+				printf("\tCompetidor n%cmero: %d\n",163, Comp.NrOrd);
+				printf("\tN%cmero de corredor: %d\n",163, Comp.NrCorr);
+				printf("\tPa%cs: %s\n",161, Comp.Pais);
+				printf("\tEdad: %d\n", Comp.Edad);
+				printf("\tTiempo: %.6f\n\n", Comp.Tiempo);
+				
+				do{
+					printf("\n¿Qu%c desea modificar?\n",130);
+					printf("0) Cancelar\n");
+					printf("1) Edad\n");
+					printf("2) Tiempo\n");
+					printf("3) Edad y tiempo\n\n");
+					printf("Ingrese una opci%cn:\n",162);
+					
+					//Almacenamos el número seleccionado en un string y lo validamos. CAL 30/10/2022
+					gets(NumBuscado);
+					NumBuscado[10] = '\0'; //Forzamos el fin de cadena.
+					
+					Flag = ValidaNumSinDec(NumBuscado);
+					if(Flag == 1){
+						//Si el valor ingresado es número, se verifica que esté entre las opciones disponibles.
+						NumValidado = atoi(NumBuscado)
+						
+						//Si se elige una opción incorrecta, se da aviso de error y se pone en FALSO la bandera para que repita el ciclo.
+						if(NumValidado < 0 || NumValidado > 3){
+							printf("\n\nError. Escriba una opci%cn v%lida (solo escriba el n%cmero de la opci%cn que necesite).\n",162,160,163,162);
+							Flag = 0;
+						}
+						
+					//Si la opción ingresada no es numérica
+					} else {
+						printf("\n\nHa ingresado un valor incorrecto.\n");
+					}
+					
+				} while (Flag == 0);
+				
+			
+				
+			//Si desde el código se pasó un parámetro erróneo, da aviso: - CAL 30/10/2022
+			} else printf("\n\nNo se reconoce la opci%cn elegida. Solo puede pasarse como tercer par%cmetro las opciones 'b' (buscar) o 'm' (modificar). Intente nuevamente.",162,160);
 			
 		} else{
 			printf("\n\n***********************************************************\n");
@@ -803,20 +864,7 @@ void BuscarCompetidor(FILE * Arch, int Metodo){
 	}
 }
 	
-void ModificarCompetidor(FILE * Arch){
-	/*La siguiente función modifica un competidor en el archivo de extensión .DAT.
-	Dicho archivo debe tener habilitada la opción de "ESCRITURA BINARIA"
-	CAL 29/10/2022
-	*/
 	
-	//Verifico que el archivo exista. CAL 29/10/2022
-	if(Arch != NULL){
-		
-		printf("\nSe ha modificado un competidor.\n");
-		
-	} else printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
-	
-}
 	
 void BajaLogica(FILE * Arch){
 	/*La siguiente modifica el campo "Activo" de un competidor en el archivo de extensión .DAT y lo deja en cero (0).
