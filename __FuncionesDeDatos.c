@@ -182,13 +182,20 @@ void ListarDat(FILE * Arch, int Metodo){
 	Si método es 5: Se pedirá un rango de tiempo y se mostrarán únicamente todos los usuarios que tengan la columna "Tiempo" dentro de ese rango.
 	*/
 	
-	//Verifico que el archivo no sea nulo
-	if(Arch != NULL) {
+	//La siguiente bandera nos servirá en la función para verificar datos. (0 = FALSO, 1 = VERDADERO). CAL 29/10/2022
+	int Flag = 1;
+	
+	//Verificamos que el archivo binario contenga datos:
+	rewind(Arch);
+	fseek(Arch,0,SEEK_END);
+	if(ftell(Arch) / sizeof(Competidor) == 0) Flag = 0; //Si el archivo está vacío, setear la bandera en FALSO.
+	rewind(Arch); //Por seguridad, siempre seteo el puntero al inicio del archivo. CAL 29/10/2022
+	
+	
+	//Verifico que el archivo no sea nulo y que tenga datos
+	if(Arch != NULL && Flag == 1) {
 	
 		//Defino las variables que puedo llegar a necesitar según el método:
-		
-		//La siguiente bandera nos servirá en cada caso para verificar datos. (0 = FALSO, 1 = VERDADERO). CAL 29/10/2022
-		int Flag = 0;
 		
 		//Para que el usuario sea libre de escribir el nombre de un país completo en caso de que el método sea 4:
 		char PaisLargo[25];
@@ -363,8 +370,11 @@ void ListarDat(FILE * Arch, int Metodo){
 		
 		printf("\n\t|%s|\n\n", LineasDivisoras);
 	
-	//Si el archivo es nulo:
-	} else printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
+	//Si el archivo es nulo o si no contiene datos:
+	} else{
+		if(Arch == NULL) printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
+		else printf("\n\nEl archivo est%c vac%co. Seleccione 'Migrar datos entre archivos' o ingrese datos en forma manual para poder listarlos.\n",160,161);
+	}
 }
 
 
@@ -445,7 +455,7 @@ void AltaCompetidor(FILE * Arch){
 					
 				}
 			} else{ //En caso de que no supere la validación de la función 'ValidaNumSinDec':
-				printf("\n\nHa ingresado un n%cmero de orden no v%clido. Ingrese un n%mero entero mayor a cero:\n",163,160,163);
+				printf("\n\nHa ingresado un n%cmero de orden no v%clido. Ingrese un n%cmero entero mayor a cero:\n",163,160,163);
 				Flag = 0;
 			}
 			
@@ -504,7 +514,7 @@ void AltaCompetidor(FILE * Arch){
 		//****************
 		//Valida que la fecha sea válida.
 		
-		printf("\n\nIngrese la fecha del corredor con formato 'dd-mm-yyyy' (en vez de guiones puede separar los valores con barras '/' o espacios, pero lo importante es que todos los d%cgitos sean num%cricos:\n",161,163);
+		printf("\n\nIngrese la fecha del corredor con formato 'dd-mm-yyyy' (en vez de guiones puede separar los valores con barras '/', espacios ' ' o puntos '.', pero lo importante es que todos los d%cgitos sean num%cricos:\n",161,163);
 		
 		//Almacenamos la fecha en un char para comprobar su validez. CAL 29/10/2022
 		char ChFecha[13] ={""};
@@ -642,6 +652,10 @@ void AltaCompetidor(FILE * Arch){
 				fwrite(&Comp,sizeof(Competidor),1,Arch);
 			}
 			
+		} else{
+			//Si no se supera la cantidad de registros, entonces se debe acceder de forma directa. CAL 29/10/2022
+			rewind(Arch);
+			fseek(Arch,sizeof(Competidor) * (atoi(ChOrden) - 1),SEEK_CUR);
 		}
 		
 		//Una vez finalizada la etapa de validación y una vez llegado a la posición del número de orden, se procede a almacenar el competidor. CAL 29/10/2022
@@ -672,7 +686,6 @@ void AltaCompetidor(FILE * Arch){
 		printf("Fecha: %s\n", ChFecha);
 		printf("Edad: %d\n", Comp.Edad);
 		printf("Pa%cs: %s\n",161, ChPais);
-		printf("Activo: %d\n", Comp.Activo);
 		printf("Tiempo: %.6f\n", Comp.Tiempo);
 		
 			
@@ -685,26 +698,61 @@ void AltaCompetidor(FILE * Arch){
 
 void BuscarCompetidor(FILE * Arch, int Metodo){
 	/*La presente función busca y muestra los datos de un competidor dado mediante dos métodos distintos, el cual se elige en el segundo parámetro.
-	Para una ayuda más visual, se puede ver 'MenuBuscarComp'
+	Para una ayuda más visual, se puede ver 'MenuBuscarComp' en el archivo '__Menus.c'
 	* Si método es 2: Busca un competidor por número de orden. (acceso directo)
 	* Si método es 3: Busca un competidor por número de corredor. (acceso secuencial)
+	CAL 29/10/2022
 	*/
 	
-	//Verifico que el archivo existe y el método sea válido. CAL 29/10/2022
-	if(Arch != NULL && Metodo > 1 && Metodo < 4){
-		
-		switch(Metodo){
-		case 2:
-			printf("\nSe ha buscado y devuelvo un competidor por nro de orden.\n");
-			break;
-		case 3:
-			printf("\nSe ha buscado y devuelvo un competidor por nro de corredor.\n");
-			break;
-		}
+	//Se usa una bandera para indicar si el dato que se busca está disponible:
+	int Flag = 1; //Por defecto la seteamos en VERDADERO
 	
-	//Si el archivo es nulo o se pasó erróneamente un método: - CAL 29/10/2022
+	//Creo la variable que conte
+	int CantDeRegistros;
+	
+	//Si el archivo es NULO, se setea la bandera en falso y la función finaliza.
+	if(Arch != NULL){
+		//Si el archivo no es falso, se verifica que contenga datos...
+		//Almacenamos la cantidad de registros. CAL 29/10/2022
+		rewind(Arch);
+		fseek(Arch,0,SEEK_END);
+		CantDeRegistros = ftell(Arch) / sizeof(Competidor);
+		rewind(Arch);
+		
+		//Si el archivo no tiene registros, se emite un mensaje de error y la función finaliza al setearse la bandera en falso. CAL 29/10/2022
+		if(CantDeRegistros == 0){
+			Flag = 0;
+			printf("\n\nEl archivo binario est%c vac%co. Pruebe la opci%cn 'Migrar datos entre archivos' o ingrese registros manualmente con la opci%cn 'Dar ALTA a competidor'\n",160,161,162,162);
+		}
+		
+	} else{ //Si el archivo es nulo:
+		Flag = 0;
+		printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
+	}
+	
+	
+	//Verifico que el archivo existe y el método sea válido. CAL 29/10/2022
+	if(Flag == 1 && Metodo > 1 && Metodo < 4){
+		
+		//La siguiente variable funciona tanto para el número de orden como para el número de competidor . CAL 30/10/2022
+		char NumBuscado[12];
+
+		
+		if(Metodo == 2)	printf("\n\nIngrese el n%cmero de orden:\n",163);
+		else if(Metodo == 3) printf("\n\nIngrese el n%cmero de corredor:\n",163);
+		
+		do{
+			gets(NumBuscado);
+			NumBuscado[10] = '\0'; //Cortamos la cadena en caso de que ingresen un número de más de 9 dígitos. CAL 30/10/2022
+			
+			if(ValidaNumSinDec(NumBuscado) == 0){ //Si no es un número entero válido
+				printf("\nHa ingresado un n%cmero incorrecto. Ingrese un n%cmero entero positivo v%lido.\n",163,163,160);
+			}
+			
+		} while(ValidaNumSinDec(NumBuscado) == 0);
+		
+	//Si se pasó erróneamente un método o ya se comprobó (y se dio aviso) de que el archivo es NULL o está vacío: - CAL 29/10/2022
 	} else{
-		if(Arch == NULL) printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
 		if(Metodo < 2 || Metodo > 3) printf("\n\nHa pasado un par%cmetro de m%ctodo err%cneo. Verifique la funci%cn desde el c%cdigo fuente.\n",160,130,162,162,162);
 	}
 }
