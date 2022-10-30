@@ -7,6 +7,6 @@ int MenuPrincipal(int MaxOpcionVisible, int MenuDescendiente);
 
 int MenuListarBinario();
 
-int MenuBuscarComp();
+int MenuBuscarModifComp();
 
 #endif

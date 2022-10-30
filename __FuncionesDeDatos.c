@@ -551,10 +551,10 @@ void AltaCompetidor(FILE * Arch){
 				Flag = 0;
 			} else {
 				//Si supera la validación de fórmula, se procede a verificar que la edad sea real:
-				if(atoi(ChEdad) > 0 && atoi(ChEdad) < 161) {
+				if(atoi(ChEdad) > 17 && atoi(ChEdad) < 200) {
 					Flag = 1;
 				} else {
-					printf("\n\nNo es posible que un competidor tenga la edad indicada. Ingrese una edad verdadera:\n");
+					printf("\n\nError. No es posible que un competidor tenga la edad indicada. Verifique que el competidor sea mayor de edad (18):\n");
 					Flag = 0;
 				}
 			}
@@ -696,7 +696,7 @@ void AltaCompetidor(FILE * Arch){
 }
 
 
-void BuscarCompetidor(FILE * Arch, int Metodo, char Opcion){
+void BuscarModifComp(FILE * Arch, int Metodo, char Opcion){
 	/*La presente función busca, muestra o modifica los datos de un competidor dado (depende si el parámetro 3 es 'b' de BUSCAR o 'm' de MODIFICAR)
 	El dato a buscar o reemplazar se encuentra mediante dos métodos distintos, el cual se elige en el segundo parámetro.
 	
@@ -709,8 +709,18 @@ void BuscarCompetidor(FILE * Arch, int Metodo, char Opcion){
 	//Se usa una bandera para indicar si el dato que se busca está disponible:
 	int Flag = 1; //Por defecto la seteamos en VERDADERO
 	
-	//Creo la variable que conte
+	//Las siguientes dos funciones servirán para almacenar los nuevos datos para modificar en caso de que elija la opción "MODIFICAR"
+	int NuevaEdad;
+	float NuevoTiempo;
+	
+	//Creo la variable que contiene la cantidad de registros del archivo binario.
 	int CantDeRegistros;
+	
+	//La siguiente variable funciona para almacenar los distintos valores numéricos que se vayan solicitando en la función . CAL 30/10/2022
+	char NumBuscado[12];
+	//La siguiente variable sirve para convertir a entero el número almacenado en 'NumBuscado'
+	int NumValidado;
+	
 	
 	//Si el archivo es NULO, se setea la bandera en falso y la función finaliza.
 	if(Arch != NULL){
@@ -735,9 +745,6 @@ void BuscarCompetidor(FILE * Arch, int Metodo, char Opcion){
 	//Verifico que el archivo existe y el método sea válido. CAL 29/10/2022
 	if(Flag == 1 && Metodo > 1 && Metodo < 4){
 		
-		//La siguiente variable funciona tanto para el número de orden como para el número de competidor . CAL 30/10/2022
-		char NumBuscado[12];
-		
 		if(Metodo == 2)	printf("\n\nIngrese el n%cmero de orden:\n",163);
 		else if(Metodo == 3) printf("\n\nIngrese el n%cmero de corredor:\n",163);
 		
@@ -752,7 +759,8 @@ void BuscarCompetidor(FILE * Arch, int Metodo, char Opcion){
 		
 		//Fin del ciclo de control de dato. CAL 30/10/2022
 		
-		int NumValidado = atoi(NumBuscado);
+		//Convertimos el número de orden o corredor buscado a entero:
+		NumValidado = atoi(NumBuscado);
 		
 		//En la siguiente sección me posiciono al inicio del archivo y busco el número ingresado por el usuario.
 		//El tipo de búsqueda dependerá del método pasado como parámetro (o sea, la opción elegida desde el menú). CAL 30/10/2022
@@ -807,15 +815,16 @@ void BuscarCompetidor(FILE * Arch, int Metodo, char Opcion){
 				
 				//En este sección reutilizo las variables 'NumBuscado' (char) y 'NumValidado' (int) para comprobar la opción buscada por el usuario. CAL 30/10/2022
 				
-				printf("\n\n\t**********************************\n
-				printf("\tCompetidor n%cmero: %d\n",163, Comp.NrOrd);
+				printf("\n\n\t**********************************\n");
+				printf("\tCompetidor n%cmero: %d",163, Comp.NrOrd);
+				printf("\n\t**********************************\n\n");
 				printf("\tN%cmero de corredor: %d\n",163, Comp.NrCorr);
 				printf("\tPa%cs: %s\n",161, Comp.Pais);
 				printf("\tEdad: %d\n", Comp.Edad);
 				printf("\tTiempo: %.6f\n\n", Comp.Tiempo);
 				
 				do{
-					printf("\n¿Qu%c desea modificar?\n",130);
+					printf("\n%cQu%c desea modificar?\n",168,130);
 					printf("0) Cancelar\n");
 					printf("1) Edad\n");
 					printf("2) Tiempo\n");
@@ -829,11 +838,11 @@ void BuscarCompetidor(FILE * Arch, int Metodo, char Opcion){
 					Flag = ValidaNumSinDec(NumBuscado);
 					if(Flag == 1){
 						//Si el valor ingresado es número, se verifica que esté entre las opciones disponibles.
-						NumValidado = atoi(NumBuscado)
+						NumValidado = atoi(NumBuscado);
 						
 						//Si se elige una opción incorrecta, se da aviso de error y se pone en FALSO la bandera para que repita el ciclo.
 						if(NumValidado < 0 || NumValidado > 3){
-							printf("\n\nError. Escriba una opci%cn v%lida (solo escriba el n%cmero de la opci%cn que necesite).\n",162,160,163,162);
+							printf("\n\nError. Escriba una opci%cn v%clida (solo escriba el n%cmero de la opci%cn que necesite).\n",162,160,163,162);
 							Flag = 0;
 						}
 						
@@ -844,10 +853,134 @@ void BuscarCompetidor(FILE * Arch, int Metodo, char Opcion){
 					
 				} while (Flag == 0);
 				
-			
+				//Una vez elegida la opción, dependiendo de lo que haya elegido el usuario se solicitarán los nuevos datos. CAL 30/10/2022
+				//Opcion 1: edad
+				//Opcion 2: tiempo
+				//Opcion 3: edad y tiempo
+				
+				//Se solicita la edad
+				if(NumValidado == 1 || NumValidado == 3){
+					
+					do{
+						printf("\nIngrese la nueva edad:\n");
+						gets(NumBuscado);
+						NumBuscado[10] = '\0'; //Forzamos el fin de cadena.
+						
+						Flag = ValidaNumSinDec(NumBuscado);
+						
+						if(Flag == 0){  //Si el número ingresado no es válido. 
+							
+							printf("\nError. Ha ingresado un n%cmero incorrecto.\n",163);
+							
+						} else{//Si el número ingresado es válido, se verifica que no sea cero.
+							
+							NuevaEdad = atoi(NumBuscado);
+							
+							if(NuevaEdad < 18 || NuevaEdad > 199){
+								Flag = 0;
+								printf("\nError. No es posible registrar la edad indicada. Verifique que el competidor sea mayor de edad (18).\n");
+							}
+							
+						}
+						
+					} while(Flag == 0);
+					
+				} //Fin de solicitud de 'EDAD'
+				
+				
+				//Se solicita el tiempo
+				if(NumValidado == 2 || NumValidado == 3){
+					
+					do{
+						printf("\nIngrese el nuevo tiempo:\n");
+						gets(NumBuscado);
+						NumBuscado[10] = '\0'; //Forzamos el fin de cadena.
+						
+						Flag = ValidaNumConDec(NumBuscado);
+						
+						if(Flag == 0){  //Si el número ingresado no es válido. 
+							
+							printf("\nError. Ha ingresado un n%cmero incorrecto. Aseg%crese de estar ingresando un n%cmero real, indicando a lo sumo un separador de decimales (sin separador de mil%csimos).\n",163,163,163,130);
+							
+						} else{//Si el número ingresado es válido, se verifica que no sea cero.
+							
+							NuevoTiempo = (float) atof(NumBuscado);
+							
+							if(NuevoTiempo < 1 || NuevoTiempo > 999){
+								Flag = 0;
+								printf("\nError. No es posible registrar el tiempo indicado. Verifique que el valor est%c entre 1 y 999.\n", 130);
+							}
+							
+						}
+						
+					} while(Flag == 0);
+					
+				} //Fin de solicitud del tiempo
+				
+				
+				//Se pide verificación antes de modificar los datos en caso de que no se haya elegido 'CANCELAR' (Opción 0). CAL 30/10/2022
+				if(!(NumValidado == 0)){
+					
+					printf("\n\n********************************\n");
+					printf("CONFIRMACI%cN",224);
+					printf("\n********************************\n");
+					
+					if(NumValidado == 1 || NumValidado == 3){
+						printf("\nEdad anterior: %d\n", Comp.Edad);
+						printf("Edad nueva: %d\n",NuevaEdad);
+					}
+					
+					if(NumValidado == 2 || NumValidado == 3){
+						printf("\nTiempo anterior: %.6f\n", Comp.Tiempo);
+						printf("Tiempo nuevo: %.6f\n",NuevoTiempo);
+					}
+					
+					printf("\n%cConfirma que desea modificar los datos del competidor cuyo orden es: %d (s/n)?\n",168, Comp.NrOrd);
+					
+					//Se solicita confirmar con SI (s) o NO (n)
+					do{
+						scanf("%c",&Opcion);
+						fflush(stdin);
+						Opcion = toupper(Opcion);
+						if(Opcion != 'S' && Opcion != 'N') printf("\n\nOpci%cn incorrecta. Confirme si desea realizar la modificaci%cn ingresando S (si) o N (no):\n",162,162);
+					} while (Opcion != 'S' && Opcion != 'N');
+						
+					//Si se confirmó la modificación, se modifican los datos en el archivo y se emite un mensaje de aviso.
+					if(Opcion == 'S'){
+						
+						//Se inserta la nueva edad
+						if(NumValidado == 1 || NumValidado == 3) Comp.Edad = NuevaEdad;
+						
+						//Se inserta el nuevo tiempo
+						if(NumValidado == 2 || NumValidado == 3) Comp.Tiempo = NuevoTiempo;
+						
+						//Se copian los datos en el archivo:
+						//Primero
+						fseek(Arch, (-1) * sizeof(Competidor),SEEK_CUR);
+						fwrite(&Comp,sizeof(Competidor), 1, Arch);
+						
+						//Posiciono el puntero al inicio del archivo.
+						rewind(Arch);
+						
+						//Doy mensaje de aviso. CAL 30/10/2022
+						printf("\n\n************************************\n");
+						printf("DATOS MODIFICADOS EXITOSAMENTE");
+						printf("\n************************************\n\n");
+						
+						
+					} else if (Opcion == 'N'){ //Si no se confirmó la modificación, se da aviso de que se canceló la operación. CAL 30/10/2022
+						printf("\n\n************************************\n");
+						printf("OPERACI%cN CANCELADA",224);
+						printf("\n************************************\n\n");
+					}
+					
+				}
+				
 				
 			//Si desde el código se pasó un parámetro erróneo, da aviso: - CAL 30/10/2022
-			} else printf("\n\nNo se reconoce la opci%cn elegida. Solo puede pasarse como tercer par%cmetro las opciones 'b' (buscar) o 'm' (modificar). Intente nuevamente.",162,160);
+			} else {
+				printf("\n\nNo se reconoce la opci%cn elegida. Solo puede pasarse como tercer par%cmetro las opciones 'b' (buscar) o 'm' (modificar). Intente nuevamente.",162,160);
+			}
 			
 		} else{
 			printf("\n\n***********************************************************\n");
@@ -869,11 +1002,12 @@ void BuscarCompetidor(FILE * Arch, int Metodo, char Opcion){
 void BajaLogica(FILE * Arch){
 	/*La siguiente modifica el campo "Activo" de un competidor en el archivo de extensión .DAT y lo deja en cero (0).
 	Dicho archivo debe tener habilitada la opción de "ESCRITURA BINARIA"
+	Si el competidor no existe o ya está inactivo, se dará mensaje de aviso.
 	CAL 29/10/2022
 	*/
 	//Verifico que el archivo exista. CAL 29/10/2022
 	if(Arch != NULL){
-	
+		
 		printf("\nSe ha dado la baja logica de un competidor.\n");
 		
 	} else printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);

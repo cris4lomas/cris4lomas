@@ -104,8 +104,11 @@ int MenuListarBinario(){
 }
 
 
-int MenuBuscarComp(){
-	//El presente menú representa las opciones a elegir por el usuario al seleccionar la opción "Buscar competidor" desde el menú principal. CAL 25/10/2022
+int MenuBuscarModifComp(char Tipo){
+	//El presente menú representa las opciones a elegir por el usuario al seleccionar la opción "Buscar competidor" o "Modificar competidor" desde el menú principal. CAL 25/10/2022
+	//Dependiendo del tipo pasado ('B' para BUSCAR y 'M' para MODIFICAR) será el título que se muestre. CAL 30/10/2022
+	
+	Tipo = toupper(Tipo);
 	
 	int OpcionSel = -1;
 	int OpMaximas = 3;
@@ -114,10 +117,15 @@ int MenuBuscarComp(){
 	//IMPRIMO EL MENÚ
 	//****************
 	
+	printf("\n\n***********************\n");
+	if(Tipo == 'B') printf("BUSCAR COMPETIDOR");
+	if(Tipo == 'M') printf("MODIFICAR COMPETIDOR");
+	printf("\n***********************\n");
+	
 	printf("\n0) Salir del programa");
 	printf("\n1) Volver al men%c principal",163);
-	printf("\n2) Buscar por n%cmero de orden", 163);
-	printf("\n3) Buscar por n%cmero de corredor", 163);
+	printf("\n2) Elegir por n%cmero de orden", 163);
+	printf("\n3) Elegir por n%cmero de corredor", 163);
 	
 	//**************************************
 	//SOLICITO Y VALIDO LA OPCIÓN INGRESADA

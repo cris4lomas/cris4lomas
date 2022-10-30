@@ -108,11 +108,11 @@ int main(){
 			//Casi todo el caso 6 es idéntico al caso 4, excepto por el menú y la función que utiliza. La explicación de su uso está en el caso 4. CAL 25/10/2022
 			do{
 				//La opción número 6 tiene un menú interno al igual que la opción 4:
-				OpcionSel = MenuBuscarComp();
+				OpcionSel = MenuBuscarModifComp('B');
 				
 				//La explicación del if es idéntica a la del caso 4:
 				if(OpcionSel > 1){
-					BuscarCompetidor(ArchDat, OpcionSel);
+					BuscarModifComp(ArchDat, OpcionSel,'B');
 					OpcionSel = MenuPrincipal(0,1);
 				} else break;
 				
@@ -121,7 +121,18 @@ int main(){
 			break;
 		
 		case 7:
-			ModificarCompetidor(ArchDat);
+			//La opción número 7 es casi idéntica a la 6 (la de buscar competidor),
+			//Incluso utilizan la misma función, pero se le pasa distinto el tercer parámetro que le indica a la función que debe modificar datos.
+			do{
+				OpcionSel = MenuBuscarModifComp('M');
+				
+				//La explicación del if es idéntica a la del caso 4:
+				if(OpcionSel > 1){
+					BuscarModifComp(ArchDat, OpcionSel,'M');
+					OpcionSel = MenuPrincipal(0,1);
+				} else break;
+			
+			} while(OpcionSel == 1);
 			break;
 			
 		case 8:

@@ -71,8 +71,14 @@ int ValidaAbc(char Texto[]){
 	int Flag = 1;
 	
 	//Valida caracter a caracter que sea espacio o letra.
-	for (int i = 0; i < strlen(Texto); i++) if(!isalpha(Texto[i]) && !isspace(Texto[i])) Flag = 0;
-	
+	for (int i = 0; i < strlen(Texto); i++){
+		if(!isalpha(Texto[i]) && !isspace(Texto[i])) Flag = 0;
+		
+		//Valido que, al menos, las primeras tres letras de la palabra no estén en blanco. CAL 30/10/2022
+		if(i == 0 || i == 1 || i == 2){
+			if(!isalpha(Texto[i]) Flag = 0;
+		}
+	}
 	return Flag;
 };
 

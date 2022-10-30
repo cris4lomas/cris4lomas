@@ -13,7 +13,7 @@ void ListarDat(FILE * Arch, int Metodo);
 
 void AltaCompetidor(FILE * Arch);
 
-void BuscarCompetidor(FILE * Arch, int Metodo);
+void BuscarModifComp(FILE * Arch, int Metodo, char Opcion);
 
 void ModificarCompetidor(FILE * Arch);
 
