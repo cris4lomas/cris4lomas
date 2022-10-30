@@ -717,7 +717,6 @@ void BuscarCompetidor(FILE * Arch, int Metodo){
 		rewind(Arch);
 		fseek(Arch,0,SEEK_END);
 		CantDeRegistros = ftell(Arch) / sizeof(Competidor);
-		rewind(Arch);
 		
 		//Si el archivo no tiene registros, se emite un mensaje de error y la función finaliza al setearse la bandera en falso. CAL 29/10/2022
 		if(CantDeRegistros == 0){
@@ -736,20 +735,67 @@ void BuscarCompetidor(FILE * Arch, int Metodo){
 		
 		//La siguiente variable funciona tanto para el número de orden como para el número de competidor . CAL 30/10/2022
 		char NumBuscado[12];
-
 		
 		if(Metodo == 2)	printf("\n\nIngrese el n%cmero de orden:\n",163);
 		else if(Metodo == 3) printf("\n\nIngrese el n%cmero de corredor:\n",163);
 		
+		//Ciclo de control de dato. Verifico que el número ingresado sea correcto. CAL 30/10/2022
 		do{
 			gets(NumBuscado);
 			NumBuscado[10] = '\0'; //Cortamos la cadena en caso de que ingresen un número de más de 9 dígitos. CAL 30/10/2022
 			
-			if(ValidaNumSinDec(NumBuscado) == 0){ //Si no es un número entero válido
-				printf("\nHa ingresado un n%cmero incorrecto. Ingrese un n%cmero entero positivo v%lido.\n",163,163,160);
-			}
-			
+			//Si no es un número entero válido
+			if(ValidaNumSinDec(NumBuscado) == 0) printf("\nHa ingresado un n%cmero incorrecto. Ingrese un n%cmero entero positivo v%clido.\n",163,163,160);
 		} while(ValidaNumSinDec(NumBuscado) == 0);
+		
+		//Fin del ciclo de control de dato. CAL 30/10/2022
+		
+		int NumValidado = atoi(NumBuscado);
+		
+		//En la siguiente sección me posiciono al inicio del archivo y busco el número ingresado por el usuario.
+		//El tipo de búsqueda dependerá del método pasado como parámetro (o sea, la opción elegida desde el menú). CAL 30/10/2022
+		
+		Flag = 0; //Seteo la bandera en falso. Si el competidor se encuentra, se vuelve verdadera. CAL 30/10/2022
+		Competidor Comp; //Para almacenar los datos del archivo.
+		rewind(Arch);
+		
+		//Metodo igual a 2: se busca por orden. Acceso directo. CAL 30/10/2022
+		if(Metodo == 2){
+			//Si el número de orden es menor a la cantidad de registros, entonces se busca.
+			if(NumValidado <= CantDeRegistros){
+				fseek(Arch,sizeof(Competidor) * (NumValidado - 1), SEEK_CUR);
+				fread(&Comp,sizeof(Competidor),1,Arch);
+				if(Comp.NrOrd == NumValidado) Flag = 1;
+			}
+		} //Fin del método 2 (por orden)
+		
+		//Metodo igual a 3: se busca por corredor. Acceso secuencial. CAL 30/10/2022
+		else if(Metodo == 3){
+			for(int i = 0; i < CantDeRegistros; i++){
+				fread(&Comp,sizeof(Competidor),1,Arch);
+				if(Comp.NrCorr == NumValidado){
+					Flag = 1;
+					break;
+				}
+			}
+		} //Fin del método 3 (por corredor)
+		
+		//Si la bandera se activó, se imprimen los datos, si no se emite un mensaje de aviso. CAL 30/10/2022
+		if(Flag == 1){
+			
+			printf("\t| %-5s | %-10s | %-5s | %-5s | A%co%-2s | %-5s | %-5s | %-6s | %-12s |\n", "Orden", "Corredor", "Dia", "Mes", 164,"", "Edad", "Pais","Activo", "Tiempo");
+			printf("\t|------------------------------------------------------------------------------------|");
+			printf("\n\t| %-5d | %-10d | %-5d | %-5s | %-5d | %-5d | %-5s | %-6d | %-12.6f |", Comp.NrOrd, Comp.NrCorr, Comp.Dia, Comp.Mes, Comp.Anio, Comp.Edad, Comp.Pais, Comp.Activo, Comp.Tiempo);
+			printf("\n\t|------------------------------------------------------------------------------------|\n\n");
+			
+		} else{
+			printf("\n\n***********************************************************\n");
+			if(Metodo == 2) printf("El n%cmero de orden: %d no se encuentra en la base de datos.", 163,NumValidado);
+			if(Metodo == 3) printf("El n%cmero de corredor: %d no se encuentra en la base de datos.", 163, NumValidado);
+			printf("\n***********************************************************\n\n");
+		}
+		
+		
 		
 	//Si se pasó erróneamente un método o ya se comprobó (y se dio aviso) de que el archivo es NULL o está vacío: - CAL 29/10/2022
 	} else{
