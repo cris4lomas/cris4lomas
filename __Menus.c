@@ -43,8 +43,8 @@ int MenuPrincipal(int MaxOpcionVisible, int MenuDescendiente){
 	if(MaxOpcionVisible > 4) printf("\n5) Dar ALTA a competidor.");
 	if(MaxOpcionVisible > 5) printf("\n6) Buscar competidor.");
 	if(MaxOpcionVisible > 6) printf("\n7) Modificar competidor.");
-	if(MaxOpcionVisible > 7) printf("\n8) Dar BAJA L%cGICA a competidor.", 224);
-	if(MaxOpcionVisible > 8) printf("\n9) Dar BAJA F%cSICA a competidor.", 214);
+	if(MaxOpcionVisible > 7) printf("\n8) Dar BAJA L%cGICA a un competidor.", 224);
+	if(MaxOpcionVisible > 8) printf("\n9) Dar BAJA F%cSICA a competidores inactivos.", 214);
 	if(MaxOpcionVisible > 9) printf("\n10) Ver lista de bajas f%csicas.",161);
 	
 	//**************************************

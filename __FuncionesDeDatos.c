@@ -73,10 +73,16 @@ void ListarTxt(FILE * Arch){
 		} else if(Flag == -1) printf("\nHa ocurrido algo con el archivo .CSV que devuelve NULL\n");
 		
 		//Si Flag es 0 (no se encontró el delimitador):
-		else printf("\nSe esperaba un archivo delimitado con caracteres ';' (punto y coma). Por favor, verifique que el archivo otorgado sea un '.CSV' delimitado con ';' y vuelva a intentarlo.\n");
+		else {
+			printf("\nSe esperaba un archivo delimitado con caracteres ';' (punto y coma). Por favor, verifique que el archivo otorgado sea un '.CSV' delimitado con ';' y vuelva a intentarlo.\n");
+			system("pause");
+		}
 	
 	//Si archivo es NULL:
-	} else printf("\nHa ocurrido un error con el archivo. Verifique que exista, reinicie el programa e intente nuevamente. \n");
+	} else{
+		printf("\nHa ocurrido un error con el archivo. Verifique que exista, reinicie el programa e intente nuevamente. \n");
+		system("pause");
+	}
 	
 };
 	
@@ -111,9 +117,11 @@ void CrearBinario(FILE * Arch, const char * NombreDat){
 			fclose(Arch);
 			Arch = fopen(NombreDat, "w+b");
 			printf("\nSe ha creado nuevamente el archivo y se han borrado todos los datos anteriores con %cxito.\n\n", 130);
+			system("pause");
 		} else{
 			//En caso de que se haya denegado el reemplazo del archivo, no se hace nada con el que ya estaba abierto.
 			printf("\nEl archivo no se ha sobreescrito y permanece intacto.\n\n");
+			system("pause");
 			rewind(Arch);
 		}
 	}
@@ -161,14 +169,17 @@ void MigrarDatos(FILE * ArchOrgn, FILE * ArchDstn){
 		
 		//Si el caracter delimitador no se encontró en el archivo origen .CSV:
 		} else if(Flag == -1) printf("\nHa ocurrido algo con el archivo .CSV que devuelve NULL\n");
-		else printf("\nSe esperaba un archivo delimitado con caracteres ';' (punto y coma). Por favor, verifique que el archivo otorgado sea un '.CSV' delimitado con ';' y vuelva a intentarlo.\n");
+		else{
+			printf("\nSe esperaba un archivo delimitado con caracteres ';' (punto y coma). Por favor, verifique que el archivo otorgado sea un '.CSV' delimitado con ';' y vuelva a intentarlo.\n");
+			system("pause");
+		}
 		
 	
 	//Si alguno de los dos archivos es nulo, la función avisa de esto pero no hace ningún tipo de migración. CAL 27/10/2022
 	} else {
 		if (ArchOrgn == NULL) printf("\nHay un problema con la apertura del archivo origen (de extensi%cn '.CSV'). Verifique que exista.",162);
 		if (ArchDstn == NULL) printf("\nHay un problema con la apertura del archivo destino (de extensi%cn '.DAT'). Verifique que exista.",162);
-		printf("\n");
+		system("pause");
 	}
 };
 
@@ -180,6 +191,8 @@ void ListarDat(FILE * Arch, int Metodo){
 	Si método es 3: Se listarán solamente los usuarios activos.
 	Si método es 4: Se pedirá que se ingrese un país y se mostrarán únicamente todos los usuarios pertenecientes a ese país.
 	Si método es 5: Se pedirá un rango de tiempo y se mostrarán únicamente todos los usuarios que tengan la columna "Tiempo" dentro de ese rango.
+	
+	Se recomienda usar esta función seguida de un: system("pause"); ya que en la misma no se incluyen.
 	*/
 	
 	//La siguiente bandera nos servirá en la función para verificar datos. (0 = FALSO, 1 = VERDADERO). CAL 29/10/2022
@@ -373,7 +386,7 @@ void ListarDat(FILE * Arch, int Metodo){
 	//Si el archivo es nulo o si no contiene datos:
 	} else{
 		if(Arch == NULL) printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
-		else printf("\n\nEl archivo est%c vac%co. Seleccione 'Migrar datos entre archivos' o ingrese datos en forma manual para poder listarlos.\n",160,161);
+		else printf("\n\nEl archivo est%c vac%co.\n",160,161);
 	}
 }
 
@@ -678,6 +691,7 @@ void AltaCompetidor(FILE * Arch){
 		
 		fwrite(&Comp,sizeof(Competidor),1,Arch);
 		
+		//Mostramos los datos del nuevo competidor:
 		printf("\n\n*******************************\n");
 		printf("Datos cargados exitosamente.");
 		printf("\n*******************************\n\n");
@@ -688,10 +702,13 @@ void AltaCompetidor(FILE * Arch){
 		printf("Pa%cs: %s\n",161, ChPais);
 		printf("Tiempo: %.6f\n", Comp.Tiempo);
 		
-			
+		system("pause");
 		
 	//Si el archivo es nulo:
-	} else printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
+	} else{
+		printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
+		system("pause");
+	}
 
 }
 
@@ -734,11 +751,13 @@ void BuscarModifComp(FILE * Arch, int Metodo, char Opcion){
 		if(CantDeRegistros == 0){
 			Flag = 0;
 			printf("\n\nEl archivo binario est%c vac%co. Pruebe la opci%cn 'Migrar datos entre archivos' o ingrese registros manualmente con la opci%cn 'Dar ALTA a competidor'\n",160,161,162,162);
+			system("pause");
 		}
 		
 	} else{ //Si el archivo es nulo:
 		Flag = 0;
 		printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
+		system("pause");
 	}
 	
 	
@@ -967,12 +986,14 @@ void BuscarModifComp(FILE * Arch, int Metodo, char Opcion){
 						printf("\n\n************************************\n");
 						printf("DATOS MODIFICADOS EXITOSAMENTE");
 						printf("\n************************************\n\n");
+						system("pause");
 						
 						
 					} else if (Opcion == 'N'){ //Si no se confirmó la modificación, se da aviso de que se canceló la operación. CAL 30/10/2022
 						printf("\n\n************************************\n");
 						printf("OPERACI%cN CANCELADA",224);
 						printf("\n************************************\n\n");
+						system("pause");
 					}
 					
 				}
@@ -981,6 +1002,7 @@ void BuscarModifComp(FILE * Arch, int Metodo, char Opcion){
 			//Si desde el código se pasó un parámetro erróneo, da aviso: - CAL 30/10/2022
 			} else {
 				printf("\n\nNo se reconoce la opci%cn elegida. Solo puede pasarse como tercer par%cmetro las opciones 'b' (buscar) o 'm' (modificar). Intente nuevamente.",162,160);
+				system("pause");
 			}
 			
 		} else{
@@ -988,6 +1010,7 @@ void BuscarModifComp(FILE * Arch, int Metodo, char Opcion){
 			if(Metodo == 2) printf("El n%cmero de orden: %d no se encuentra en la base de datos.", 163,NumValidado);
 			if(Metodo == 3) printf("El n%cmero de corredor: %d no se encuentra en la base de datos.", 163, NumValidado);
 			printf("\n***********************************************************\n\n");
+			system("pause");
 		}
 		
 		
@@ -1038,6 +1061,7 @@ void BajaLogica(FILE * Arch){
 		if (CantDeRegistros == 0){
 			Flag = 0;
 			printf("\n\nEl archivo que intenta utilizar est%c vac%co. Intente la opci%cn de 'Migrar datos entre archivos' o pruebe creando alg%cn registro en 'Dar ALTA a competidor'.\n",160,161,162,163);
+			system("pause");
 		}
 		
 		
@@ -1045,6 +1069,7 @@ void BajaLogica(FILE * Arch){
 	} else{
 		Flag = 0;
 		printf("\n\nHubo un error con el archivo. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
+		system("pause");
 	}
 		
 	//Si el archivo no es nulo y no está vacío, se ejecuta la función.
@@ -1158,8 +1183,23 @@ void BajaFisica(FILE * ArchDat, FILE * ArchBajas, const char * NombreArchBajasFi
 	int Flag = 1; //Asigno la bandera en verdadero por defecto.
 	int CantDeRegistDat; //Sirve para verificar que el .DAT no esté vacío
 	char Opcion; //Sirve para confirmar que el usuario quiere proceder a la baja física de lo usuarios inactivos.
-	int CantDeBajas = 0;
-	Competidor Comp; //Esta última nos sirve para ir traspasando competidor a competidor.
+	int CantDeBajas = 0; //Esta variable sirve para dar un mensaje más personalizado acerca de cuántas bajas se traspasaron.
+	Competidor Comp, CompVacio; //Esta última nos sirve para ir traspasando competidor a competidor.
+	
+	
+	//Defino el competidor vacío que me ayudará a ir rellenando todos los espacios necesarios con ceros.
+	
+	CompVacio.NrOrd = 0;
+	CompVacio.NrCorr = 0;
+	CompVacio.Dia = 0;
+	//CompVacio.Mes
+	strcpy(CompVacio.Mes,"0  ");
+	CompVacio.Anio = 0;
+	//CompVacio.Pais
+	strcpy(CompVacio.Pais,"0  ");
+	CompVacio.Edad = 0;
+	CompVacio.Activo = 0;
+	CompVacio.Tiempo = 0;
 	
 	//*******************************
 	//ZONA DE VERIFICACIÓN PREVIA
@@ -1181,6 +1221,7 @@ void BajaFisica(FILE * ArchDat, FILE * ArchBajas, const char * NombreArchBajasFi
 		if (CantDeRegistDat == 0){
 			Flag = 0;
 			printf("\n\nEl archivo .DAT que intenta utilizar est%c vac%co. Intente la opci%cn de 'Migrar datos entre archivos' o pruebe creando alg%cn registro en 'Dar ALTA a competidor'.\n",160,161,162,163);
+			system("pause");
 		}
 		
 		
@@ -1189,6 +1230,7 @@ void BajaFisica(FILE * ArchDat, FILE * ArchBajas, const char * NombreArchBajasFi
 		Flag = 0;
 		if (ArchDat == NULL) printf("\n\nHubo un error con el archivo DAT. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
 		if (ArchBajas == NULL) printf("\n\nHubo un error con el archivo XYZ. Verifique que exista, que no est%c siendo utilizado por ning%cn otro programa y vuelva a intentarlo.\n", 160,163);
+		system("pause");
 	}
 	
 	//Si los archivo no son nulos y el archivo .DAT no está vacío, se ejecuta la función. CAL 30/10/2022
@@ -1215,41 +1257,36 @@ void BajaFisica(FILE * ArchDat, FILE * ArchBajas, const char * NombreArchBajasFi
 			
 			//Nos posicionamos al inicio del archivo .DAT
 			rewind(ArchDat);
-			//Nos posicionamos al final del archivo .XYZ
-			rewind(ArchBajas);
-			fseek(ArchBajas,0,SEEK_END);
 			
+			//Leemos registro a registro. CAL 30/10/2022
 			for(int i = 0; i < CantDeRegistDat; i++){
-				//Leemos registro a registro. CAL 30/10/2022
+				
+				fseek(ArchDat,0,SEEK_SET);
+				fseek(ArchDat, i * sizeof(Competidor), SEEK_CUR);
 				fread(&Comp,sizeof(Competidor),1,ArchDat);
 				
 				//Si cumple la condición de estar inactivo, se procede al traspaso de datos y su posterior borrado del .DAT - CAL 30/10/2022 -
-				if(Comp.Activo == 0){
+				if(Comp.Activo == 0 && Comp.NrOrd != 0){
+					
 					CantDeBajas++;
+					
+					//Nos posicionamos al final del archivo .XYZ y traspasamos los datos
+					fseek(ArchBajas,0,SEEK_END);
 					fwrite(&Comp,sizeof(Competidor),1,ArchBajas);
 					
-					//Una vez traspasados los datos, borramos los datos del competidor y lo insertamos en la base .DAT nuevamente.
-					//Es innecesario para el campo "Activo" porque ya está en cero.
-					Comp.NrOrd = 0;
-					Comp.NrCorr = 0;
-					Comp.Dia = 0;
-					Comp.Mes = {"0  "};
-					Comp.Anio = 0;
-					Comp.Edad = 0;
-					Comp.Pais {"0  "};
-					Comp.Tiempo = 0;
-					
-					//Retrocedemos en la posición del archivo .DAT y sobreescribimos los datos. CAL 30/10/2022
-					fseek(ArchDat, (-1) * sizeof(Competidor),SEEK_CUR);
-					fwrite(&Comp,sizeof(Competidor),1,ArchDat);
+					//Se borra el competidor
+					fseek(ArchDat,0,SEEK_SET);
+					fseek(ArchDat, i * sizeof(Competidor), SEEK_CUR);
+					fwrite(&CompVacio, sizeof(Competidor),1,ArchDat);
 					
 				} //Fin de validación de usuario inactivo
-			} //Fin de ciclo que recorre el .DAT y traspasa los usuarios inactivos.
+				
+			}//Fin de ciclo que recorre el .DAT y traspasa los usuarios inactivos.
 			
 			printf("\n\n*****************************\n");
 			printf("OPERACI%cN EXITOSA.",224);
 			if(CantDeBajas == 1) printf("\nSe ha realizado: %d baja",CantDeBajas);
-			if(CantDeBajas != 1) printf("\nSe haN realizado: %d bajaS",CantDeBajas);
+			if(CantDeBajas != 1) printf("\nSe han realizado: %d bajas",CantDeBajas);
 			printf("\n*****************************\n\n");
 			system("pause");
 			
@@ -1265,6 +1302,11 @@ void BajaFisica(FILE * ArchDat, FILE * ArchBajas, const char * NombreArchBajasFi
 }
 	
 void VerBajasFisicas(FILE * Arch){
+	/*La presente función se encarga de listar todos los datos de las bajas físicas que se realizaron desde el .DAT
+	y cuyos datos se transportaron al archivo .XYZ (que es el archivo que esta función lee).
+		La función necesita que el archivo .XYZ
+	- CAL 30/10/2022 - */
+	
 	//Verifico que el archivo exista. CAL 29/10/2022
 	if(Arch != NULL){
 	

@@ -98,6 +98,7 @@ int main(){
 					//Entonces llamamos a la función con el parámetro correspondiente al tipo de visualización de datos que deseamos:
 					// 2: Ver todos los usuarios, 3: Ver usuarios activos, 4: Ver usuarios por país, 5: Ver usuarios por rango de tiempo.
 					ListarDat(ArchDat, OpcionSel);
+					system("pause");
 					//En la siguiente sentencia restablecemos el valor de 'OpcionSel' luego de listar todos los usuarios.
 					//La idea es darle la opción al usuario de si quiere finalizar el programa, o volver al menú principal CAL 25/10/2022
 					OpcionSel = MenuPrincipal(0,1);
@@ -151,7 +152,13 @@ int main(){
 			break;
 			
 		case 10:
-			VerBajasFisicas(ArchBajasFis);
+			/*En el caso de que quieran ver las bajas físicas realizadas,
+			Utilizo la función construída para listar el archivo .DAT
+			y le paso como parámetro el 'método 2' que incluye los usuarios inactivos.
+			- CAL 30/10/2022 - */
+			
+			ListarDat(ArchBajasFis, 2);
+			system("pause");
 			break;
 		}
 		
