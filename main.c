@@ -30,9 +30,15 @@ int main(){
 	const char * NombreTxt = {"corredores_v1.csv"};
 	//El archivo 'corredores.dat', será un archivo binario que se puede crear desde el programa y en el cual se van a volcar todos los datos que operemos.
 	const char * NombreDat = {"corredores.dat"};
-	//El archivo 'bajas_fisicas.dat', será un archivo binario que se crea automáticamente al dar de 'BAJA FÍSICA' a un competidor. Registra todas las bajas físicas que se hayan realizado.
-	const char * NombreBajasFis = {"competidores_bajas_"};
+	//El archivo 'competidores_bajas_[fecha].xyz', será un archivo binario que se crea automáticamente al dar de 'BAJA FÍSICA' a un competidor. Registra todas las bajas físicas que se hayan realizado.
+	char * NombreBajasFis = {"competidores_bajas_"};
+	//El archivo de bajas físicas se concatena siempre con la fecha del día actual
+	char NombreBajasFisConF[50] = {""};
 	
+	//Le agrego a "FechaDeHoy", la fecha de hoy y la extensión:
+	strcpy(NombreBajasFisConF, NombreBajasFis);
+	ObtenerStrFecha(NombreBajasFisConF);
+	strcat(NombreBajasFisConF,".xyz");
 	
 	//La variable 'OpcionSel' se irá modificando a lo largo de todo el programa a medida que el usuario vaya seleccionando opciones entre los distintos menúes.
 	int OpcionSel = -1;
@@ -58,7 +64,7 @@ int main(){
 		
 		//Abro en cada ciclo el archivo .dat (luego lo cierro), para verificar siempre que se haya creado y/o que exista. CAL 25/10/2022
 		FILE * ArchDat = fopen(NombreDat,"rb+");
-		FILE * ArchBajasFis = fopen(NombreBajasFis,"rb+");
+		FILE * ArchBajasFis = fopen(NombreBajasFisConF,"rb+");
 		
 		//Si el archivo '.dat' no existe, solo se van a mostrar las opciones hasta la de crear ese archivo, de lo contrario se mostrará el resto de opciones. CAL 25/10/2022
 		if(ArchDat == NULL) OpcionSel = MenuPrincipal(2,0);
@@ -141,7 +147,7 @@ int main(){
 			break;
 			
 		case 9:
-			BajaFisica(ArchDat, ArchBajasFis, NombreBajasFis);
+			BajaFisica(ArchDat, ArchBajasFis, NombreBajasFisConF);
 			break;
 			
 		case 10:

@@ -4,6 +4,22 @@
 #include <ctype.h>
 #include <time.h>
 
+void ObtenerStrFecha(char FechaAConcatenar[]){
+	/*La siguiente función se encarga de poner en el arreglo pasado como parámetro la fecha del día en curso.
+	El formato en el que se agrega la fecha es 'dd-mm-yyyy'
+	El arreglo debe tener por lo menos 11 posiciones de longitud.
+	-CAL 30/10/2022-
+	*/
+	
+	time_t tiempo;
+	char Fecha[80];
+	struct tm *tmPtr;
+	tiempo = time(NULL);
+	tmPtr = localtime(&tiempo);
+	strftime(Fecha,80 * sizeof(char), "%d-%m-%Y", tmPtr);
+	strcat(FechaAConcatenar,Fecha);
+}
+
 int ValidaNumConDec(char Numero[]){
 	
 	/*La siguiente función se encarga de validar que el texto pasado solo contenga numeros o exactamente un separador de decimales (no admite separador de milésimos).

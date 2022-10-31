@@ -3,6 +3,8 @@
 
 //Acá se declaran todas aquellas funciones que tengan como objetivo validar algún tipo de dato.
 
+void ObtenerStrFecha(char Fecha[]);
+
 int ValidaNumConDec(char Numero[]);
 
 int ValidaNumSinDec(char Numero[]);

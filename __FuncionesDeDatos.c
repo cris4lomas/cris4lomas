@@ -1137,7 +1137,10 @@ void BajaLogica(FILE * Arch){
 				rewind(Arch);
 				
 			//Si el número de orden supera la cantidad de registros existentes:
-			} else printf("\n\nEl n%cmero de orden ingresado no se encontr%c en la base de datos.\n",163,162);
+			} else{
+				printf("\n\nEl n%cmero de orden ingresado no se encontr%c en la base de datos.\n",163,162);
+				system("pause");
+			}
 		
 		} //Fin de validación del número de orden.
 		
@@ -1153,17 +1156,17 @@ void BajaFisica(FILE * ArchDat, FILE * ArchBajas, const char * NombreArchBajasFi
 	*/
 	
 	int Flag = 1; //Asigno la bandera en verdadero por defecto.
-	int CantDeRegistDat;
-	int CantDeRegistXyz;
+	int CantDeRegistDat; //Sirve para verificar que el .DAT no esté vacío
+	char Opcion; //Sirve para confirmar que el usuario quiere proceder a la baja física de lo usuarios inactivos.
+	int CantDeBajas = 0;
+	Competidor Comp; //Esta última nos sirve para ir traspasando competidor a competidor.
 	
 	//*******************************
 	//ZONA DE VERIFICACIÓN PREVIA
 	//*******************************
 	
-	if(ArchBajas == NULL) {
-		//Si no existe el archivo, lo creo. CAL 29/10/2022
-		ArchBajas = fopen(NombreArchBajasFis,"wb+");
-	}
+	//Si no existe el archivo, lo creo. CAL 29/10/2022
+	if(ArchBajas == NULL) ArchBajas = fopen(NombreArchBajasFis,"wb+");
 	
 	//Verifico que ambos archivos existan. CAL 29/10/2022
 	if(ArchDat != NULL && ArchBajas != NULL){
@@ -1173,12 +1176,6 @@ void BajaFisica(FILE * ArchDat, FILE * ArchBajas, const char * NombreArchBajasFi
 		fseek(ArchDat,0,SEEK_END);
 		CantDeRegistDat = ftell(ArchDat) / sizeof(Competidor);
 		rewind(ArchDat);
-		
-		//Replico el recuento de datos para el archivo de bajas físicas
-		rewind(ArchBajas);
-		fseek(ArchBajas,0,SEEK_END);
-		CantDeRegistXyz = ftell(ArchBajas) / sizeof(Competidor);
-		rewind(ArchBajas);
 		
 		//Si el archivo .DAT está vacío, se pone la bandera en FALSO
 		if (CantDeRegistDat == 0){
@@ -1199,7 +1196,71 @@ void BajaFisica(FILE * ArchDat, FILE * ArchBajas, const char * NombreArchBajasFi
 	//**********************
 	//EJECUCIÓN DE FUNCIÓN
 	//**********************
-	if(Flag == 1){}
+	if(Flag == 1){
+		
+		printf("\n\n***************\n");
+		printf("ATENCI%cN",224);
+		printf("\n***************\n\n");
+		printf("%cConfirma que desea realizar la baja f%csica de todos los usuarios inactivos%c (s/n)\n",168,161,63);
+		
+		do {
+			scanf("%c",&Opcion);
+			fflush(stdin);
+			Opcion = toupper(Opcion);
+			if(Opcion != 'S' && Opcion != 'N') printf("\nError. Confirme si desea proceder a la baja f%csica de todos los usuarios inactivos (s) o no (n):\n",161);
+		} while (Opcion != 'S' && Opcion != 'N');
+		
+		//Si se procede a la baja...
+		if(Opcion == 'S'){
+			
+			//Nos posicionamos al inicio del archivo .DAT
+			rewind(ArchDat);
+			//Nos posicionamos al final del archivo .XYZ
+			rewind(ArchBajas);
+			fseek(ArchBajas,0,SEEK_END);
+			
+			for(int i = 0; i < CantDeRegistDat; i++){
+				//Leemos registro a registro. CAL 30/10/2022
+				fread(&Comp,sizeof(Competidor),1,ArchDat);
+				
+				//Si cumple la condición de estar inactivo, se procede al traspaso de datos y su posterior borrado del .DAT - CAL 30/10/2022 -
+				if(Comp.Activo == 0){
+					CantDeBajas++;
+					fwrite(&Comp,sizeof(Competidor),1,ArchBajas);
+					
+					//Una vez traspasados los datos, borramos los datos del competidor y lo insertamos en la base .DAT nuevamente.
+					//Es innecesario para el campo "Activo" porque ya está en cero.
+					Comp.NrOrd = 0;
+					Comp.NrCorr = 0;
+					Comp.Dia = 0;
+					Comp.Mes = {"0  "};
+					Comp.Anio = 0;
+					Comp.Edad = 0;
+					Comp.Pais {"0  "};
+					Comp.Tiempo = 0;
+					
+					//Retrocedemos en la posición del archivo .DAT y sobreescribimos los datos. CAL 30/10/2022
+					fseek(ArchDat, (-1) * sizeof(Competidor),SEEK_CUR);
+					fwrite(&Comp,sizeof(Competidor),1,ArchDat);
+					
+				} //Fin de validación de usuario inactivo
+			} //Fin de ciclo que recorre el .DAT y traspasa los usuarios inactivos.
+			
+			printf("\n\n*****************************\n");
+			printf("OPERACI%cN EXITOSA.",224);
+			if(CantDeBajas == 1) printf("\nSe ha realizado: %d baja",CantDeBajas);
+			if(CantDeBajas != 1) printf("\nSe haN realizado: %d bajaS",CantDeBajas);
+			printf("\n*****************************\n\n");
+			system("pause");
+			
+		} else{ //Si se cancela la baja física de los usuarios inactivos...
+			printf("\n\n*****************************\n");
+			printf("OPERACI%cN CANCELADA.",224);
+			printf("\n*****************************\n\n");
+			system("pause");
+		}
+		
+	} //Fin de ejecución de función. CAL 30/10/2022
 	
 }
 	
