@@ -19,6 +19,4 @@ int ConvertirMesAString(int Mes, char CharMes[]);
 
 int ExtraerDeFecha(char Fecha[],char DatoAExtraer, char Separador);
 
-
-
 #endif
