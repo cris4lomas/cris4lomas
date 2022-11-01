@@ -1,0 +1,43 @@
+# depslib dependency file v1.0
+1667186050 source:c:\users\cris\desktop\tpf_labo2_lomas-cristian\__funcionesdedatos.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+	<time.h>
+	"FuncionesValidantes.h"
+	"Estructuras.h"
+
+1667181287 c:\users\cris\desktop\tpf_labo2_lomas-cristian\funcionesvalidantes.h
+
+1667058584 c:\users\cris\desktop\tpf_labo2_lomas-cristian\estructuras.h
+
+1667173368 source:c:\users\cris\desktop\tpf_labo2_lomas-cristian\__funcionesvalidantes.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+	<time.h>
+
+1667175537 source:c:\users\cris\desktop\tpf_labo2_lomas-cristian\__menus.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+	<time.h>
+
+1667186346 source:c:\users\cris\desktop\tpf_labo2_lomas-cristian\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+	<time.h>
+	"Menus.h"
+	"FuncionesValidantes.h"
+	"FuncionesDeDatos.h"
+	"Estructuras.h"
+
+1667181318 c:\users\cris\desktop\tpf_labo2_lomas-cristian\menus.h
+
+1667185667 c:\users\cris\desktop\tpf_labo2_lomas-cristian\funcionesdedatos.h
+
