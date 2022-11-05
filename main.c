@@ -1,3 +1,4 @@
+//y esto?
 <<<<<<< HEAD
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,16 +11,16 @@
 #include "Estructuras.h"
 
 /*
-El siguiente programa registra los datos de distintos competidores (país, marcas de tiempo, número de competidor, etc...) en un archivo binario.
-Además, permite realizar nuevos registros, modificar registros existentes y/o eliminarlos y llevar un control en un archivo aparte de los registros eliminados.
+El siguiente programa registra los datos de distintos competidores (paï¿½s, marcas de tiempo, nï¿½mero de competidor, etc...) en un archivo binario.
+Ademï¿½s, permite realizar nuevos registros, modificar registros existentes y/o eliminarlos y llevar un control en un archivo aparte de los registros eliminados.
 
-Los Archivos necesarios para su utilización son:
+Los Archivos necesarios para su utilizaciï¿½n son:
 
 1) Menus.h y __Menus.c
 2) FuncionesValidantes.h y __FuncionesValidantes.c
 3) FuncionesDeDatos.h y __FuncionesDeDatos.c
-4) Además necesita de librerías estándar como las que están incluídas en stdio.h, stdlib.h, string.h, ctype.h y time.h
-5) Por último, necesita de un archivo llamado 'corredores_v1.csv', que incluye datos precargados de los competidores.
+4) Ademï¿½s necesita de librerï¿½as estï¿½ndar como las que estï¿½n incluï¿½das en stdio.h, stdlib.h, string.h, ctype.h y time.h
+5) Por ï¿½ltimo, necesita de un archivo llamado 'corredores_v1.csv', que incluye datos precargados de los competidores.
 
 Autor: Cristian Alejandro Lomas (CAL)
 Fecha de entrega: 10/11/2022
@@ -29,19 +30,19 @@ int main(){
 
 	//En primer lugar, defino los nombres de los archivos que se van a utilizar en todo el programa.
 	char * NombreTxt = {"corredores_v1.csv"};
-	//El archivo 'corredores.dat', será un archivo binario que se puede crear desde el programa y en el cual se van a volcar todos los datos que operemos.
+	//El archivo 'corredores.dat', serï¿½ un archivo binario que se puede crear desde el programa y en el cual se van a volcar todos los datos que operemos.
 	char * NombreDat = {"corredores.dat"};
-	//El archivo 'competidores_bajas_[fecha].xyz', será un archivo binario que se crea automáticamente al dar de 'BAJA FÍSICA' a un competidor. Registra todas las bajas físicas que se hayan realizado.
+	//El archivo 'competidores_bajas_[fecha].xyz', serï¿½ un archivo binario que se crea automï¿½ticamente al dar de 'BAJA Fï¿½SICA' a un competidor. Registra todas las bajas fï¿½sicas que se hayan realizado.
 	char * NombreBajasFis = {"competidores_bajas_"};
-	//El archivo de bajas físicas se concatena siempre con la fecha del día actual
+	//El archivo de bajas fï¿½sicas se concatena siempre con la fecha del dï¿½a actual
 	char NombreBajasFisConF[50] = {""};
 
-	//Le agrego a "FechaDeHoy", la fecha de hoy y la extensión:
+	//Le agrego a "FechaDeHoy", la fecha de hoy y la extensiï¿½n:
 	strcpy(NombreBajasFisConF, NombreBajasFis);
 	ObtenerStrFecha(NombreBajasFisConF);
 	strcat(NombreBajasFisConF,".xyz");
 
-	//La variable 'OpcionSel' se irá modificando a lo largo de todo el programa a medida que el usuario vaya seleccionando opciones entre los distintos menúes.
+	//La variable 'OpcionSel' se irï¿½ modificando a lo largo de todo el programa a medida que el usuario vaya seleccionando opciones entre los distintos menï¿½es.
 	int OpcionSel = -1;
 
 	//Abro el archivo .csv, con el obetivo de verificar que existe en el mismo directorio que el programa.
@@ -59,15 +60,15 @@ int main(){
 	//INICIO DEL CICLO PRINCIPAL
 	//*****************************
 
-	//El siguiente ciclo se encarga de ejecutar casi infinitamente todas las opciones de menú disponibles, hasta que la opción elegida sea cero (0).
-	//Todo el control de errores se realiza dentro de las distintas funciones de menú (Por ejemplo, que se ingrese un número menor a cero).
+	//El siguiente ciclo se encarga de ejecutar casi infinitamente todas las opciones de menï¿½ disponibles, hasta que la opciï¿½n elegida sea cero (0).
+	//Todo el control de errores se realiza dentro de las distintas funciones de menï¿½ (Por ejemplo, que se ingrese un nï¿½mero menor a cero).
 	//CAL 25/10/2022
 
 	do{
 
 		OpcionSel = MenuPrincipal(10,0);
 
-		//Elijo la función que voy a utilizar en función de la opción que se haya seleccionado. CAL 25/10/2022
+		//Elijo la funciï¿½n que voy a utilizar en funciï¿½n de la opciï¿½n que se haya seleccionado. CAL 25/10/2022
 		switch (OpcionSel){
 
 		case 1:
@@ -85,21 +86,21 @@ int main(){
 			break;
 
 		case 4:
-			//La opción número 4 tiene un menú interno, para el cual también se utiliza la variable 'OpcionSel'
-			//La variable 'OpcionSel' luego se restablece a 0 o 1, dependiendo la elección del usuario de si quiere volver al menú anterior o finalizar.
-			//Ejecuto un ciclo interno para que la opción "volver al menú anterior" permita hacer eso y no redirija al menú principal. CAL 25/10/2022
+			//La opciï¿½n nï¿½mero 4 tiene un menï¿½ interno, para el cual tambiï¿½n se utiliza la variable 'OpcionSel'
+			//La variable 'OpcionSel' luego se restablece a 0 o 1, dependiendo la elecciï¿½n del usuario de si quiere volver al menï¿½ anterior o finalizar.
+			//Ejecuto un ciclo interno para que la opciï¿½n "volver al menï¿½ anterior" permita hacer eso y no redirija al menï¿½ principal. CAL 25/10/2022
 
 			do{
 				OpcionSel = MenuListarBinario();
 
 				if(OpcionSel > 1){
-					//Si la opción seleccionada es mayor a 1 (al rango máximo se indica dentro de la función 'ListarDat'), entonces significa que no seleccionó ni finalizar programa, ni volver al menú anterior.
-					//Entonces llamamos a la función con el parámetro correspondiente al tipo de visualización de datos que deseamos:
-					// 2: Ver todos los usuarios, 3: Ver usuarios activos, 4: Ver usuarios por país, 5: Ver usuarios por rango de tiempo.
+					//Si la opciï¿½n seleccionada es mayor a 1 (al rango mï¿½ximo se indica dentro de la funciï¿½n 'ListarDat'), entonces significa que no seleccionï¿½ ni finalizar programa, ni volver al menï¿½ anterior.
+					//Entonces llamamos a la funciï¿½n con el parï¿½metro correspondiente al tipo de visualizaciï¿½n de datos que deseamos:
+					// 2: Ver todos los usuarios, 3: Ver usuarios activos, 4: Ver usuarios por paï¿½s, 5: Ver usuarios por rango de tiempo.
 					ListarDat(NombreDat, OpcionSel);
 					system("pause");
 					//En la siguiente sentencia restablecemos el valor de 'OpcionSel' luego de listar todos los usuarios.
-					//La idea es darle la opción al usuario de si quiere finalizar el programa, o volver al menú principal CAL 25/10/2022
+					//La idea es darle la opciï¿½n al usuario de si quiere finalizar el programa, o volver al menï¿½ principal CAL 25/10/2022
 					OpcionSel = MenuPrincipal(0,1);
 				} else break;
 
@@ -112,12 +113,12 @@ int main(){
 			break;
 
 		case 6:
-			//Casi todo el caso 6 es idéntico al caso 4, excepto por el menú y la función que utiliza. La explicación de su uso está en el caso 4. CAL 25/10/2022
+			//Casi todo el caso 6 es idï¿½ntico al caso 4, excepto por el menï¿½ y la funciï¿½n que utiliza. La explicaciï¿½n de su uso estï¿½ en el caso 4. CAL 25/10/2022
 			do{
-				//La opción número 6 tiene un menú interno al igual que la opción 4:
+				//La opciï¿½n nï¿½mero 6 tiene un menï¿½ interno al igual que la opciï¿½n 4:
 				OpcionSel = MenuBuscarModifComp('B');
 
-				//La explicación del if es idéntica a la del caso 4:
+				//La explicaciï¿½n del if es idï¿½ntica a la del caso 4:
 				if(OpcionSel > 1){
 					BuscarModifComp(NombreDat, OpcionSel,'B');
 					OpcionSel = MenuPrincipal(0,1);
@@ -128,12 +129,12 @@ int main(){
 			break;
 
 		case 7:
-			//La opción número 7 es casi idéntica a la 6 (la de buscar competidor),
-			//Incluso utilizan la misma función, pero se le pasa distinto el tercer parámetro que le indica a la función que debe modificar datos.
+			//La opciï¿½n nï¿½mero 7 es casi idï¿½ntica a la 6 (la de buscar competidor),
+			//Incluso utilizan la misma funciï¿½n, pero se le pasa distinto el tercer parï¿½metro que le indica a la funciï¿½n que debe modificar datos.
 			do{
 				OpcionSel = MenuBuscarModifComp('M');
 
-				//La explicación del if es idéntica a la del caso 4:
+				//La explicaciï¿½n del if es idï¿½ntica a la del caso 4:
 				if(OpcionSel > 1){
 					BuscarModifComp(NombreDat, OpcionSel,'M');
 					OpcionSel = MenuPrincipal(0,1);
@@ -151,9 +152,9 @@ int main(){
 			break;
 
 		case 10:
-			/*En el caso de que quieran ver las bajas físicas realizadas,
-			Utilizo la función construída para listar el archivo .DAT
-			y le paso como parámetro el 'método 2' que incluye los usuarios inactivos.
+			/*En el caso de que quieran ver las bajas fï¿½sicas realizadas,
+			Utilizo la funciï¿½n construï¿½da para listar el archivo .DAT
+			y le paso como parï¿½metro el 'mï¿½todo 2' que incluye los usuarios inactivos.
 			- CAL 30/10/2022 - */
 			ListarDat(NombreBajasFisConF, 2);
 			system("pause");
@@ -174,16 +175,16 @@ int main(){
 #include "Estructuras.h"
 
 /*
-El siguiente programa registra los datos de distintos competidores (país, marcas de tiempo, número de competidor, etc...) en un archivo binario.
-Además, permite realizar nuevos registros, modificar registros existentes y/o eliminarlos y llevar un control en un archivo aparte de los registros eliminados.
+El siguiente programa registra los datos de distintos competidores (paï¿½s, marcas de tiempo, nï¿½mero de competidor, etc...) en un archivo binario.
+Ademï¿½s, permite realizar nuevos registros, modificar registros existentes y/o eliminarlos y llevar un control en un archivo aparte de los registros eliminados.
 
-Los Archivos necesarios para su utilización son:
+Los Archivos necesarios para su utilizaciï¿½n son:
 
 1) Menus.h y __Menus.c
 2) FuncionesValidantes.h y __FuncionesValidantes.c
 3) FuncionesDeDatos.h y __FuncionesDeDatos.c
-4) Además necesita de librerías estándar como las que están incluídas en stdio.h, stdlib.h, string.h, ctype.h y time.h
-5) Por último, necesita de un archivo llamado 'corredores_v1.csv', que incluye datos precargados de los competidores.
+4) Ademï¿½s necesita de librerï¿½as estï¿½ndar como las que estï¿½n incluï¿½das en stdio.h, stdlib.h, string.h, ctype.h y time.h
+5) Por ï¿½ltimo, necesita de un archivo llamado 'corredores_v1.csv', que incluye datos precargados de los competidores.
 
 Autor: Cristian Alejandro Lomas (CAL)
 Fecha de entrega: 10/11/2022
@@ -193,19 +194,19 @@ int main(){
 	
 	//En primer lugar, defino los nombres de los archivos que se van a utilizar en todo el programa.
 	const char * NombreTxt = {"corredores_v1.csv"};
-	//El archivo 'corredores.dat', será un archivo binario que se puede crear desde el programa y en el cual se van a volcar todos los datos que operemos.
+	//El archivo 'corredores.dat', serï¿½ un archivo binario que se puede crear desde el programa y en el cual se van a volcar todos los datos que operemos.
 	const char * NombreDat = {"corredores.dat"};
-	//El archivo 'competidores_bajas_[fecha].xyz', será un archivo binario que se crea automáticamente al dar de 'BAJA FÍSICA' a un competidor. Registra todas las bajas físicas que se hayan realizado.
+	//El archivo 'competidores_bajas_[fecha].xyz', serï¿½ un archivo binario que se crea automï¿½ticamente al dar de 'BAJA Fï¿½SICA' a un competidor. Registra todas las bajas fï¿½sicas que se hayan realizado.
 	char * NombreBajasFis = {"competidores_bajas_"};
-	//El archivo de bajas físicas se concatena siempre con la fecha del día actual
+	//El archivo de bajas fï¿½sicas se concatena siempre con la fecha del dï¿½a actual
 	char NombreBajasFisConF[50] = {""};
 	
-	//Le agrego a "FechaDeHoy", la fecha de hoy y la extensión:
+	//Le agrego a "FechaDeHoy", la fecha de hoy y la extensiï¿½n:
 	strcpy(NombreBajasFisConF, NombreBajasFis);
 	ObtenerStrFecha(NombreBajasFisConF);
 	strcat(NombreBajasFisConF,".xyz");
 	
-	//La variable 'OpcionSel' se irá modificando a lo largo de todo el programa a medida que el usuario vaya seleccionando opciones entre los distintos menúes.
+	//La variable 'OpcionSel' se irï¿½ modificando a lo largo de todo el programa a medida que el usuario vaya seleccionando opciones entre los distintos menï¿½es.
 	int OpcionSel = -1;
 	
 	//Abro el archivo .csv, con el obetivo de verificar que existe en el mismo directorio que el programa.
@@ -221,8 +222,8 @@ int main(){
 	//INICIO DEL CICLO PRINCIPAL
 	//*****************************
 	
-	//El siguiente ciclo se encarga de ejecutar casi infinitamente todas las opciones de menú disponibles, hasta que la opción elegida sea cero (0).
-	//Todo el control de errores se realiza dentro de las distintas funciones de menú (Por ejemplo, que se ingrese un número menor a cero).
+	//El siguiente ciclo se encarga de ejecutar casi infinitamente todas las opciones de menï¿½ disponibles, hasta que la opciï¿½n elegida sea cero (0).
+	//Todo el control de errores se realiza dentro de las distintas funciones de menï¿½ (Por ejemplo, que se ingrese un nï¿½mero menor a cero).
 	//CAL 25/10/2022
 	
 	do{
@@ -231,11 +232,11 @@ int main(){
 		FILE * ArchDat = fopen(NombreDat,"rb+");
 		FILE * ArchBajasFis = fopen(NombreBajasFisConF,"rb+");
 		
-		//Si el archivo '.dat' no existe, solo se van a mostrar las opciones hasta la de crear ese archivo, de lo contrario se mostrará el resto de opciones. CAL 25/10/2022
+		//Si el archivo '.dat' no existe, solo se van a mostrar las opciones hasta la de crear ese archivo, de lo contrario se mostrarï¿½ el resto de opciones. CAL 25/10/2022
 		if(ArchDat == NULL) OpcionSel = MenuPrincipal(2,0);
 		else OpcionSel = MenuPrincipal(10,0);
 		
-		//Elijo la función que voy a utilizar en función de la opción que se haya seleccionado. CAL 25/10/2022
+		//Elijo la funciï¿½n que voy a utilizar en funciï¿½n de la opciï¿½n que se haya seleccionado. CAL 25/10/2022
 		switch (OpcionSel){
 		
 		case 1:
@@ -251,21 +252,21 @@ int main(){
 			break;
 			
 		case 4:
-			//La opción número 4 tiene un menú interno, para el cual también se utiliza la variable 'OpcionSel'
-			//La variable 'OpcionSel' luego se restablece a 0 o 1, dependiendo la elección del usuario de si quiere volver al menú anterior o finalizar.
-			//Ejecuto un ciclo interno para que la opción "volver al menú anterior" permita hacer eso y no redirija al menú principal. CAL 25/10/2022
+			//La opciï¿½n nï¿½mero 4 tiene un menï¿½ interno, para el cual tambiï¿½n se utiliza la variable 'OpcionSel'
+			//La variable 'OpcionSel' luego se restablece a 0 o 1, dependiendo la elecciï¿½n del usuario de si quiere volver al menï¿½ anterior o finalizar.
+			//Ejecuto un ciclo interno para que la opciï¿½n "volver al menï¿½ anterior" permita hacer eso y no redirija al menï¿½ principal. CAL 25/10/2022
 			
 			do{
 				OpcionSel = MenuListarBinario();
 				
 				if(OpcionSel > 1){
-					//Si la opción seleccionada es mayor a 1 (al rango máximo se indica dentro de la función 'ListarDat'), entonces significa que no seleccionó ni finalizar programa, ni volver al menú anterior.
-					//Entonces llamamos a la función con el parámetro correspondiente al tipo de visualización de datos que deseamos:
-					// 2: Ver todos los usuarios, 3: Ver usuarios activos, 4: Ver usuarios por país, 5: Ver usuarios por rango de tiempo.
+					//Si la opciï¿½n seleccionada es mayor a 1 (al rango mï¿½ximo se indica dentro de la funciï¿½n 'ListarDat'), entonces significa que no seleccionï¿½ ni finalizar programa, ni volver al menï¿½ anterior.
+					//Entonces llamamos a la funciï¿½n con el parï¿½metro correspondiente al tipo de visualizaciï¿½n de datos que deseamos:
+					// 2: Ver todos los usuarios, 3: Ver usuarios activos, 4: Ver usuarios por paï¿½s, 5: Ver usuarios por rango de tiempo.
 					ListarDat(ArchDat, OpcionSel);
 					system("pause");
 					//En la siguiente sentencia restablecemos el valor de 'OpcionSel' luego de listar todos los usuarios.
-					//La idea es darle la opción al usuario de si quiere finalizar el programa, o volver al menú principal CAL 25/10/2022
+					//La idea es darle la opciï¿½n al usuario de si quiere finalizar el programa, o volver al menï¿½ principal CAL 25/10/2022
 					OpcionSel = MenuPrincipal(0,1);
 				} else break;
 				
@@ -278,12 +279,12 @@ int main(){
 			break;
 			
 		case 6:
-			//Casi todo el caso 6 es idéntico al caso 4, excepto por el menú y la función que utiliza. La explicación de su uso está en el caso 4. CAL 25/10/2022
+			//Casi todo el caso 6 es idï¿½ntico al caso 4, excepto por el menï¿½ y la funciï¿½n que utiliza. La explicaciï¿½n de su uso estï¿½ en el caso 4. CAL 25/10/2022
 			do{
-				//La opción número 6 tiene un menú interno al igual que la opción 4:
+				//La opciï¿½n nï¿½mero 6 tiene un menï¿½ interno al igual que la opciï¿½n 4:
 				OpcionSel = MenuBuscarModifComp('B');
 				
-				//La explicación del if es idéntica a la del caso 4:
+				//La explicaciï¿½n del if es idï¿½ntica a la del caso 4:
 				if(OpcionSel > 1){
 					BuscarModifComp(ArchDat, OpcionSel,'B');
 					OpcionSel = MenuPrincipal(0,1);
@@ -294,12 +295,12 @@ int main(){
 			break;
 		
 		case 7:
-			//La opción número 7 es casi idéntica a la 6 (la de buscar competidor),
-			//Incluso utilizan la misma función, pero se le pasa distinto el tercer parámetro que le indica a la función que debe modificar datos.
+			//La opciï¿½n nï¿½mero 7 es casi idï¿½ntica a la 6 (la de buscar competidor),
+			//Incluso utilizan la misma funciï¿½n, pero se le pasa distinto el tercer parï¿½metro que le indica a la funciï¿½n que debe modificar datos.
 			do{
 				OpcionSel = MenuBuscarModifComp('M');
 				
-				//La explicación del if es idéntica a la del caso 4:
+				//La explicaciï¿½n del if es idï¿½ntica a la del caso 4:
 				if(OpcionSel > 1){
 					BuscarModifComp(ArchDat, OpcionSel,'M');
 					OpcionSel = MenuPrincipal(0,1);
@@ -317,9 +318,9 @@ int main(){
 			break;
 			
 		case 10:
-			/*En el caso de que quieran ver las bajas físicas realizadas,
-			Utilizo la función construída para listar el archivo .DAT
-			y le paso como parámetro el 'método 2' que incluye los usuarios inactivos.
+			/*En el caso de que quieran ver las bajas fï¿½sicas realizadas,
+			Utilizo la funciï¿½n construï¿½da para listar el archivo .DAT
+			y le paso como parï¿½metro el 'mï¿½todo 2' que incluye los usuarios inactivos.
 			- CAL 30/10/2022 - */
 			
 			ListarDat(ArchBajasFis, 2);
